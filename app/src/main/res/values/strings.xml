@@ -1,0 +1,127 @@
+<resources>
+    <string name="app_name">Minha Opinião</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Senha</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">Endereço de email inválido</string>
+    <string name="error_invalid_password">Senha muito curta</string>
+    <string name="error_incorrect_password">Senha inválida</string>
+    <string name="error_field_required">Est</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_cadastro">Cadastrar</string>
+    <string name="nome">Nome</string>
+    <string name="sobrenome">Sobrenome</string>
+    <string name="email">E-Mail</string>
+    <string name="cep">CEP</string>
+    <string name="foto">Foto</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="entrar">Entrar</string>
+    <string name="esqueceuSenha">Esqueci minha senha</string>
+    <string name="facebook">Login com facebook</string>
+    <string name="ou">OU</string>
+    <string name="dia">Dia</string>
+    <string name="mes">Mês</string>
+    <string name="ano">Ano</string>
+    <string name="nascimento">Nascimento</string>
+    <string name="conf_senha">Confirmar Senha</string>
+    <string name="enviar">Enviar</string>
+    <string name="question_pwd">Esqueceu sua senha?</string>
+    <string name="msg_recup_senha">Minha Opinião gostaria de enviar as instruções de resete de senha para o endereço de e-mail associado a sua conta de usuário.</string>
+    <string name="atendimento">Atendimento</string>
+    <string name="conforto">Conforto</string>
+    <string name="qualidade">Qualidade</string>
+    <string name="custo">Custo</string>
+    <string name="retornaria">Retornaria</string>
+    <string name="indicar_amigo">Indicaria a um amigo</string>
+    <string name="enviar_avaliacao">Enviar avaliação :)</string>
+    <string name="area_comercial">Área Comercial</string>
+    <string name="localizacao">Localização</string>
+
+    <string-array name="atributos_avaliacao">
+        <item>Ótimo</item>
+        <item>Bom</item>
+        <item>Moderado</item>
+        <item>Ruim</item>
+        <item>Muito Ruim</item>
+    </string-array>
+
+    <string-array name="questao_objetiva">
+        <item>Sim</item>
+        <item>Não</item>
+    </string-array>
+
+    <string name="estado">Estado</string>
+    <string name="cidade">Cidade</string>
+    <string name="bairro">Bairro</string>
+    <string name="inserir">Inserir</string>
+    <string name="gps">GPS</string>
+    <string name="locInserir">Localização baseada nos dados abaixo.</string>
+    <string name="locGPS">Localização baseada no GPS.</string>
+    <string name="enviar_foto">Enviar foto</string>
+    <string name="local">Local</string>
+    <string name="inf_estabelecimento">Receber informações do estabelecimento.</string>
+
+    <string name="cliente">Cliente</string>
+    <string name="funcionario">Funcionário</string>
+    <string name="proprietario">Proprietário</string>
+
+    <string name="avaliar">Avaliar</string>
+    <string name="info">Informações</string>
+    <string name="comentarios">Comentários</string>
+
+    <string-array name="list_estados">
+        <item>Acre </item>
+        <item>Alagoas </item>
+        <item>Amapá </item>
+        <item>Amazonas </item>
+        <item>Bahia </item>
+        <item>Ceará </item>
+        <item>Distrito Federal </item>
+        <item>Espírito Santo </item>
+        <item>Goiás </item>
+        <item>Maranhão </item>
+        <item>Mato Grosso </item>
+        <item>Mato Grosso do Sul </item>
+        <item>Minas Gerais </item>
+        <item>Pará </item>
+        <item>Paraíba </item>
+        <item>Paraná </item>
+        <item>Pernambuco </item>
+        <item>Piauí </item>
+        <item>Rio de Janeiro </item>
+        <item>Rio Grande do Norte </item>
+        <item>Rio Grande do Sul </item>
+        <item>Rondônia </item>
+        <item>Roraima </item>
+        <item>Santa Catarina </item>
+        <item>São Paulo </item>
+        <item>Sergipe </item>
+        <item>Tocantins </item>
+
+    </string-array>
+
+    <string-array name="questao_custo">
+        <item>Elevado</item>
+        <item>Moderado</item>
+        <item>Atraente</item>
+    </string-array>
+
+    <string-array name="list_areas">
+        <item>Lanchonete</item>
+        <item>Restaurante</item>
+        <item>Loja</item>
+        <item>Serviço</item>
+        <item>Entretenimento</item>
+        <item>Outras</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+</resources>

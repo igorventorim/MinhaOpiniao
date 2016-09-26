@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/activity_adiciona_local_acitivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cursoandroid.myopinion.AdicionaLocalAcitivity"
+    android:background="@color/colorPrimaryDark">
+
+    <ImageButton
+        android:id="@+id/back_add_local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_gravity="left"
+        android:background="@null"
+        android:layout_marginBottom="5dp"
+        />
+
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:drawablePadding="10dp"
+        android:layout_height="wrap_content"
+        android:text="Cadastrar Local"
+        android:drawableLeft="@drawable/ic_checked"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/nome_estabelecimento"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:hint="@string/nome"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:focusableInTouchMode="true"
+                android:textSize="20dp"
+                android:drawablePadding="10dp"
+                android:paddingLeft="10dp"
+                android:drawableLeft="@drawable/ic_conforto"
+                android:background="@drawable/edittextstyle"/>
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittextstyle"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:drawablePadding="10dp"
+                android:layout_height="wrap_content"
+                android:text="@string/area_comercial"
+                android:drawableLeft="@drawable/ic_area_comercial"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:textStyle="bold"
+                android:id="@+id/spin_area_comercial"
+                app:ms_background_color="@color/colorPrimary"
+                app:ms_text_color="@color/colorPrimaryDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittextstyle"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:drawablePadding="10dp"
+                android:layout_height="wrap_content"
+                android:text="@string/local"
+                android:layout_gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_localizacao"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/segmented2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
+                segmentedgroup:sc_border_width="2dp"
+                segmentedgroup:sc_corner_radius="10dp">
+
+                <RadioButton
+                    android:id="@+id/inserir_localizacao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_sum"
+                    android:text="@string/inserir"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/gps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gps"
+                    android:enabled="true"
+                    android:drawableLeft="@drawable/ic_gps"
+                    style="@style/RadioButton" />
+
+
+            </info.hoang8f.android.segmented.SegmentedGroup>
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/tv_dados_inserir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/locInserir"
+                />
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/tv_dados_gps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/locGPS"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/form_inserir_localizacao">
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittextstyle"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorAccent"
+                        android:layout_width="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estado" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <com.jaredrummler.materialspinner.MaterialSpinner
+                        android:textStyle="bold"
+                        android:id="@+id/spin_estado"
+                        app:ms_background_color="@color/colorPrimary"
+                        app:ms_text_color="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/et_cidade"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:ems="10"
+                    android:hint="@string/cidade"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:focusableInTouchMode="true"
+                    android:textSize="20dp"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="10dp"
+
+                    android:background="@drawable/edittextstyle"/>
+
+                <EditText
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/et_bairro"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:ems="10"
+                    android:hint="@string/bairro"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:focusableInTouchMode="true"
+                    android:textSize="20dp"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="10dp"
+
+                    android:background="@drawable/edittextstyle"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittextstyle"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorAccent"
+                    android:layout_width="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enviar_foto"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/ic_add_a_photo_black_24dp"/>
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:layout_marginRight="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_galeria"
+                    android:background="@null"/>
+
+                <ImageButton
+                    android:layout_marginRight="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_photo"
+                    android:background="@null"/>
+
+
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittextstyle"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:drawablePadding="10dp"
+                android:layout_height="wrap_content"
+                android:text="Quem sou eu?"
+                android:layout_gravity="left"
+                android:drawableLeft="@drawable/ic_question"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
+
+            <!--<View-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1" />-->
+
+
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/radios_vinculo_estabelecimento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                segmentedgroup:sc_border_width="2dp"
+                segmentedgroup:sc_corner_radius="10dp">
+<!--<RadioGroup-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal">-->
+                <RadioButton
+                    android:id="@+id/radio_proprietario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/proprietario"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/radio_funcionario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/funcionario"
+                    android:enabled="true"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:id="@+id/radio_cliente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cliente"
+                    android:enabled="true"
+                    style="@style/RadioButton" />
+<!--</RadioGroup>-->
+            </info.hoang8f.android.segmented.SegmentedGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"/>
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/inf_estabelecimento"/>
+
+            </LinearLayout>
+            <Button
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cadastrar"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                android:background="@drawable/button_blue"
+                android:layout_marginBottom="30dp"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>
