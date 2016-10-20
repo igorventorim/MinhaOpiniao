@@ -65,6 +65,7 @@
     <string name="enviar_foto">Enviar foto</string>
     <string name="local">Local</string>
     <string name="inf_estabelecimento">Receber informações do estabelecimento.</string>
+    <string name="busca_local">Pesquisar local</string>
 
     <string name="cliente">Cliente</string>
     <string name="funcionario">Funcionário</string>
@@ -73,6 +74,19 @@
     <string name="avaliar">Avaliar</string>
     <string name="info">Informações</string>
     <string name="comentarios">Comentários</string>
+    <string name="recomendados">Recomendados</string>
+    <string name="proximos">Próximos</string>
+    <string name="novidades">Novidades</string>
+    <string name="favoritos">Favoritos</string>
+    <string name="usuario_cadastrado">Usuário cadastrado com sucesso!</string>
+    <string name="senhas_diferentes">As senhas informadas são diferentes!</string>
+    <string name="recup_senha">E-mail enviado com sucesso!</string>
+
+    <string-array name="colors">
+        <item>#FFF</item>
+        <item>#000</item>
+        <item>#F00</item>
+    </string-array>
 
     <string-array name="list_estados">
         <item>Acre </item>
@@ -102,7 +116,6 @@
         <item>São Paulo </item>
         <item>Sergipe </item>
         <item>Tocantins </item>
-
     </string-array>
 
     <string-array name="questao_custo">

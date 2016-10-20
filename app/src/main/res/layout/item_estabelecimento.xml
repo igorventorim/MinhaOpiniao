@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        card_view:cardCornerRadius="6dp"
+        card_view:cardBackgroundColor="@color/colorPrimaryDark"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp">
+    <!--<ImageView-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:src="@null"-->
+        <!--android:id="@+id/iv_estabelecimento"/>-->
+
+    <cn.refactor.library.ShapeImageView
+        android:id="@+id/iv_estabelecimento"
+        app:backgroundColor="@color/colorPrimaryDark"
+        android:layout_width="125dp"
+        android:layout_height="match_parent"
+        app:shape="RoundRectangle"
+        android:layout_gravity="center_horizontal"
+        app:borderColor="@color/colorAccent"
+        android:layout_marginBottom="2dp"
+        app:borderWidth="1dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_model"
+            android:textSize="16dp"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textSize="12dp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:drawablePadding="10dp"
+            android:layout_height="wrap_content"
+            android:text="Bar ou Restaurante"
+            android:drawableLeft="@drawable/ic_area_comercial"/>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:drawablePadding="10dp"
+            android:layout_height="wrap_content"
+            android:text="VITORIA-ES"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_localizacao"/>
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/tv_nota"-->
+                <!--android:textSize="14dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:textColor="@color/colorAccent"-->
+                <!--android:text="2.5"/>-->
+
+
+            <com.github.ornolfr.ratingview.RatingView
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:drawable_empty="@drawable/ic_star_empty_yellow"
+            app:drawable_filled="@drawable/ic_star_filled_yellow"
+            app:drawable_half="@drawable/ic_star_half_yellow"
+            app:drawable_margin="4dp"
+            app:drawable_size="26dp"
+            app:is_indicator="true"
+            app:max_count="5"
+            app:rating="2.5" />
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+    </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class RecuperarSenhaActivity extends AppCompatActivity {
 
@@ -29,5 +30,14 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        btEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email.setText("");
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.recup_senha), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }

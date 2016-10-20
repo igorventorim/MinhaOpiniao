@@ -24,9 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CadastroActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EstabelecimentoActivity"
@@ -34,13 +36,17 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RecuperarSenhaActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ReclamarActivity" />
+        <activity android:name=".ReclamarActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".AvaliacaoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AdicionaLocalAcitivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
