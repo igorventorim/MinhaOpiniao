@@ -9,7 +9,7 @@
     <string name="error_invalid_email">Endereço de email inválido</string>
     <string name="error_invalid_password">Senha muito curta</string>
     <string name="error_incorrect_password">Senha inválida</string>
-    <string name="error_field_required">Est</string>
+    <string name="error_field_required">Favor digitar o e-mail</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -22,7 +22,7 @@
     <string name="cadastrar">Cadastrar</string>
     <string name="entrar">Entrar</string>
     <string name="esqueceuSenha">Esqueci minha senha</string>
-    <string name="facebook">Login com facebook</string>
+    <string name="facebook">LOGIN COM FACEBOOK</string>
     <string name="ou">OU</string>
     <string name="dia">Dia</string>
     <string name="mes">Mês</string>
@@ -81,6 +81,8 @@
     <string name="usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="senhas_diferentes">As senhas informadas são diferentes!</string>
     <string name="recup_senha">E-mail enviado com sucesso!</string>
+    <string name="email_invalido">Informe um e-mail válido!</string>
+    <string name="senha_pequena">Informe uma senha com tamanho maior que 4.</string>
 
     <string-array name="colors">
         <item>#FFF</item>
@@ -136,5 +138,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main2">Main2Activity</string>
+    
+    <string name="preference_logged">com.cursoandroid.myopinion.logged</string>
+    <string name="saved_logged">logado</string>
+    <string name="user_id">id do usuario</string>
+
+    <string name="facebook_app_id">333231187053263</string>
 
 </resources>

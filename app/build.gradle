@@ -23,6 +23,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        mavenCentral()
     }
 }
 
@@ -53,6 +54,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true
     }
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 
 }

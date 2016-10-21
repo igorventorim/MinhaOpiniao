@@ -1,6 +1,9 @@
 package com.cursoandroid.myopinion;
 
+import com.facebook.FacebookSdk;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +28,9 @@ import android.widget.Toast;
 import com.cursoandroid.myopinion.adapter.EstabelecimentoAdapter;
 import com.cursoandroid.myopinion.adapter.RecyclerViewOnClickListenerHack;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
+import com.cursoandroid.myopinion.domain.UsuarioDAO;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.github.clans.fab.FloatingActionButton;
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -61,11 +67,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView.LayoutManager layoutManager;
     private ViewPager viewPager;
     List<Estabelecimento> mList = new ArrayList<>();
+    SharedPreferences sharedPref;
+    private final int DEFAULT_INVALID_ID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
+        final UsuarioDAO user = new UsuarioDAO(getApplicationContext());
+        if(isLogged()){ user.read(readIdUserSharedPreferences());}
 
         Estabelecimento n = new Estabelecimento();
         n.setName("BAR DO SEU ZÉ");
@@ -113,8 +124,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
         adapter.setmRecyclerViewOnClickListenerHack(this);
         recyclerView.setAdapter(adapter);
-
-        final IProfile profile = new ProfileDrawerItem().withName("Igor Ventorim").withEmail("igor.ventorim@gmail.com").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
+        IProfile profile;
+        if(user.getId() != 0)
+        {
+            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
+        }
+        else{profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
 
         //HeaderNavigation
         headerNavigationLeft = new AccountHeaderBuilder()
@@ -139,6 +154,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if(drawerItem != null)
+                        {
+                            Intent intent = null;
+                            if(drawerItem.getIdentifier() == 5)
+                            {
+                                intent = new Intent(MainActivity.this,LoginActivity.class);
+                                writeUserSharedPreferences();
+                                startActivity(intent);
+                                LoginManager.getInstance().logOut();
+                                finish();
+                            }
+                        }
+
                         return false;
                     }
                 })
@@ -284,4 +312,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        estabelecimento.putExtras(b);
         startActivity(estabelecimento);
     }
+
+    /**
+     * Salvando estado de logado do usuário
+     */
+    private void writeUserSharedPreferences()
+    {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.saved_logged),false);
+        editor.putInt(getString(R.string.user_id),DEFAULT_INVALID_ID);
+        editor.commit();
+    }
+
+    /**
+     * Recuperar identificador de usuário que está logado
+     * @return id do usuário
+     */
+    private int readIdUserSharedPreferences()
+    {
+        return sharedPref.getInt(getString(R.string.user_id),DEFAULT_INVALID_ID);
+    }
+
+    private boolean isLogged()
+    {
+        return sharedPref.getBoolean(getString(R.string.saved_logged),false);
+    }
+
+
+
 }

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.cursoandroid.myopinion.database.DBContract;
 import com.cursoandroid.myopinion.database.DBHelper;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * Created by igor on 19/10/16.
  */
 
-public class UsuarioDAO {
+public class UsuarioDAO{
 
     SQLiteDatabase db;
     DBHelper mDbHelper;
@@ -79,6 +80,45 @@ public class UsuarioDAO {
         c.close();
 
     }
+
+
+    public void read(int id)
+    {
+        this.open("read");
+        String[] projection = {
+                DBContract.EntdUsuario._ID,
+                DBContract.EntdUsuario.COLUMN_NAME_NOME,
+                DBContract.EntdUsuario.COLUMN_NAME_EMAIL,
+                DBContract.EntdUsuario.COLUMN_NAME_CEP,
+                DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,
+                DBContract.EntdUsuario.COLUMN_NAME_SENHA
+        };
+        String selection = DBContract.EntdUsuario._ID+"=?";
+        String[] selectionArgs = { String.valueOf(id) };
+        Cursor c = db.query(
+                DBContract.EntdUsuario.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+        boolean findEntd;
+
+        if(findEntd = c.moveToNext())
+        {
+            this.id = c.getLong(c.getColumnIndex("_id"));
+            this.nome = c.getString(c.getColumnIndex("nome"));
+            this.email = c.getString(c.getColumnIndex("email"));
+            this.cep = c.getString(c.getColumnIndex("cep"));
+            this.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
+            this.senha = c.getString(c.getColumnIndex("senha"));
+        }
+        c.close();
+        this.close();
+    }
+
 
     public void put(String nome, String email, String cep, String dtNasc, String senha){
         // Create a new map of values, where column names are the keys
@@ -183,5 +223,16 @@ public class UsuarioDAO {
 
     public String getSenha() {
         return senha;
+    }
+
+    public static ArrayList<String> getCredenciais(Context c)
+    {
+        ArrayList<String> credenciais = new ArrayList<>();
+        UsuarioDAO dao = new UsuarioDAO(c);
+        dao.open("read");
+        ArrayList<UsuarioDAO> listUsuarios = dao.getUsuarios();
+        for (UsuarioDAO user: listUsuarios){credenciais.add(user.getEmail()+":"+user.getSenha()+":"+user.getId());}
+        dao.close();
+        return credenciais;
     }
 }

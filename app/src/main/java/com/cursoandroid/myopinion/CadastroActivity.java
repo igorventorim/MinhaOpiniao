@@ -1,5 +1,6 @@
 package com.cursoandroid.myopinion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,8 @@ public class CadastroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
+        Intent dados = getIntent();
+
 
         backCadastro = (ImageButton) findViewById(R.id.back_cadastro);
         backCadastro.setOnClickListener(new View.OnClickListener() {
@@ -45,29 +48,52 @@ public class CadastroActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.email);
         etConfirmaSenha = (EditText) findViewById(R.id.conf_senha);
         etSenha = (EditText) findViewById(R.id.senha) ;
-
+        etEmail.setText(dados.getStringExtra("email"));
+        etSenha.setText(dados.getStringExtra("senha"));
+//        etConfirmaSenha.setText(dados.getStringExtra("senha")); // PREENCHER AUTOMATICAMENTE CAMPO CONFIRMA SENHA???
         btCadastrar = (Button) findViewById(R.id.bt_cadastrar);
 
         btCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(etSenha.getText().toString().equals(etConfirmaSenha.getText().toString())) {
-                    UsuarioDAO user = new UsuarioDAO(getApplicationContext());
-                    user.open("write");
-                    user.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString());
-                    user.close();
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
-                    finish();
-                }else
-                {
-                    etSenha.setText("");
-                    etConfirmaSenha.setText("");
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.senhas_diferentes), Toast.LENGTH_LONG).show();
-                }
+               if(verificaDados()) {
+                   UsuarioDAO user = new UsuarioDAO(getApplicationContext());
+                   user.open("write");
+                   user.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString());
+                   user.close();
+                   Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
+                   finish();
+               }
 
             }
         });
 
     }
+
+    private boolean verificaDados()
+    {
+        if(!(etEmail.getText().toString().contains("@")))
+        {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.email_invalido), Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(!(etSenha.getText().toString().equals(etConfirmaSenha.getText().toString())))
+        {
+            etSenha.setText("");
+            etConfirmaSenha.setText("");
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.senhas_diferentes), Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(etSenha.getText().toString().length() < 4)
+        {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.senha_pequena), Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
+    }
+
 }

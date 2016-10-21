@@ -12,7 +12,7 @@ public class SqlStrings {
 
     static final String COMMA_SEP = ",";
 
-    static final String SQL_CREATE_USUARIO =
+    static final String SQL_CREATE_TABLE_USUARIO =
             "CREATE TABLE " + DBContract.EntdUsuario.TABLE_NAME+ "("+
             DBContract.EntdUsuario._ID+ " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"+
             DBContract.EntdUsuario.COLUMN_NAME_NOME+ TEXT_TYPE+COMMA_SEP+
@@ -22,6 +22,6 @@ public class SqlStrings {
             DBContract.EntdUsuario.COLUMN_NAME_SENHA+TEXT_TYPE+" )";
 
 
-    public static final String SQL_DELETE_USUARIO =
+    public static final String SQL_DELETE_TABLE_USUARIO =
             "DROP TABLE IF EXISTS " + DBContract.EntdUsuario.TABLE_NAME;
 }
