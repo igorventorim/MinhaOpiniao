@@ -1,5 +1,6 @@
 package com.cursoandroid.myopinion;
 
+import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +31,8 @@ import com.cursoandroid.myopinion.adapter.EstabelecimentoAdapter;
 import com.cursoandroid.myopinion.adapter.RecyclerViewOnClickListenerHack;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
 import com.cursoandroid.myopinion.domain.UsuarioDAO;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
@@ -46,6 +50,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,14 +75,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<Estabelecimento> mList = new ArrayList<>();
     SharedPreferences sharedPref;
     private final int DEFAULT_INVALID_ID = -1;
+//    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final Intent data = getIntent();
         sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
         final UsuarioDAO user = new UsuarioDAO(getApplicationContext());
         if(isLogged()){ user.read(readIdUserSharedPreferences());}
+//        buildUser();
 
         Estabelecimento n = new Estabelecimento();
         n.setName("BAR DO SEU ZÉ");
@@ -125,9 +134,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter.setmRecyclerViewOnClickListenerHack(this);
         recyclerView.setAdapter(adapter);
         IProfile profile;
+
         if(user.getId() != 0)
         {
-            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
+            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(user.getFoto()).withIdentifier(100);
         }
         else{profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
 
@@ -180,17 +190,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .withAccountHeader(headerNavigationLeft)
                 .build();
         navigationDrawerLeft.addItems(
-                new PrimaryDrawerItem().withName("Minha Conta").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_account_circle_black_24dp)).withIdentifier(1).withSelectable(false),
-                new PrimaryDrawerItem().withName("Adicionar Estabelecimento").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_playlist_add_black_24dp)).withIdentifier(2).withSelectable(false),
-                new PrimaryDrawerItem().withName("Meus Estabelecimentos").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_star_rate_black_18dp)).withIdentifier(3).withSelectable(false),
-                new PrimaryDrawerItem().withName("Fale Conosco").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_question_answer_black_24dp)).withIdentifier(4).withSelectable(false),
-                new PrimaryDrawerItem().withName("Sair").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_logout)).withIdentifier(5).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.minha_conta)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_account_circle_black_24dp)).withIdentifier(1).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.add_estabelecimento)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_playlist_add_black_24dp)).withIdentifier(2).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.meus_estabelecimentos)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_star_rate_black_18dp)).withIdentifier(3).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.fale_conosco)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_question_answer_black_24dp)).withIdentifier(4).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.sair)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_logout)).withIdentifier(5).withSelectable(false),
 //                new DividerDrawerItem(),
-                new SectionDrawerItem().withName("Sobre o Aplicativo"),
-                new SecondaryDrawerItem().withName("Dúvidas Frequentes").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_ask_question)).withIdentifier(6).withSelectable(false),
-                new SecondaryDrawerItem().withName("Curta no Facebook").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_curtir)).withIdentifier(7).withSelectable(false),
-                new SecondaryDrawerItem().withName("Avalie na Google Play").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_google)).withIdentifier(8).withSelectable(false),
-                new SecondaryDrawerItem().withName("Termos de Uso").withIcon(ContextCompat.getDrawable(this,R.drawable.ic_termo)).withIdentifier(9).withSelectable(false)
+                new SectionDrawerItem().withName(getString(R.string.sobre_app)),
+                new SecondaryDrawerItem().withName(getString(R.string.duvida_freq)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_ask_question)).withIdentifier(6).withSelectable(false),
+                new SecondaryDrawerItem().withName(getString(R.string.curta_facebook)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_curtir)).withIdentifier(7).withSelectable(false),
+                new SecondaryDrawerItem().withName(getString(R.string.avalie_google)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_google)).withIdentifier(8).withSelectable(false),
+                new SecondaryDrawerItem().withName(getString(R.string.termos_uso)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_termo)).withIdentifier(9).withSelectable(false)
 
         );
 
@@ -230,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationTabBar.setTitleMode(NavigationTabBar.TitleMode.ACTIVE);
         navigationTabBar.setBadgeGravity(NavigationTabBar.BadgeGravity.TOP);
         navigationTabBar.setBadgePosition(NavigationTabBar.BadgePosition.CENTER);
-        navigationTabBar.setTypeface("fonts/custom_font.ttf");
+//        navigationTabBar.setTypeface("fonts/custom_font.ttf");
         navigationTabBar.setIsBadged(true);
         navigationTabBar.setIsTitled(true);
         navigationTabBar.setIsTinted(true);

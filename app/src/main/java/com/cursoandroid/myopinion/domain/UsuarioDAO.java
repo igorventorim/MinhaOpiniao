@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.cursoandroid.myopinion.BitmapUtil;
 import com.cursoandroid.myopinion.database.DBContract;
 import com.cursoandroid.myopinion.database.DBHelper;
 
@@ -26,6 +29,8 @@ public class UsuarioDAO{
     private String dtNasc;
     private String cep;
     private String senha;
+
+    private Bitmap foto;
 
     public UsuarioDAO(Context context)
     {
@@ -53,7 +58,8 @@ public class UsuarioDAO{
                 DBContract.EntdUsuario.COLUMN_NAME_EMAIL,
                 DBContract.EntdUsuario.COLUMN_NAME_CEP,
                 DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,
-                DBContract.EntdUsuario.COLUMN_NAME_SENHA
+                DBContract.EntdUsuario.COLUMN_NAME_SENHA,
+                DBContract.EntdUsuario.COLUMN_NAME_FOTO
         };
         String selection = DBContract.EntdUsuario.COLUMN_NAME_NOME+"=?";
         String[] selectionArgs = { nome };
@@ -70,12 +76,14 @@ public class UsuarioDAO{
 
         if(findEntd = c.moveToNext())
         {
+            byte[] img = c.getBlob(c.getColumnIndex("foto"));
             this.id = c.getLong(c.getColumnIndex("_id"));
             this.nome = c.getString(c.getColumnIndex("nome"));
             this.email = c.getString(c.getColumnIndex("email"));
             this.cep = c.getString(c.getColumnIndex("cep"));
             this.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
             this.senha = c.getString(c.getColumnIndex("senha"));
+            this.foto = BitmapFactory.decodeByteArray(img,0,img.length);
         }
         c.close();
 
@@ -91,7 +99,9 @@ public class UsuarioDAO{
                 DBContract.EntdUsuario.COLUMN_NAME_EMAIL,
                 DBContract.EntdUsuario.COLUMN_NAME_CEP,
                 DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,
-                DBContract.EntdUsuario.COLUMN_NAME_SENHA
+                DBContract.EntdUsuario.COLUMN_NAME_SENHA,
+                DBContract.EntdUsuario.COLUMN_NAME_FOTO
+
         };
         String selection = DBContract.EntdUsuario._ID+"=?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -108,19 +118,23 @@ public class UsuarioDAO{
 
         if(findEntd = c.moveToNext())
         {
+
             this.id = c.getLong(c.getColumnIndex("_id"));
             this.nome = c.getString(c.getColumnIndex("nome"));
             this.email = c.getString(c.getColumnIndex("email"));
             this.cep = c.getString(c.getColumnIndex("cep"));
             this.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
             this.senha = c.getString(c.getColumnIndex("senha"));
+            byte[] img = c.getBlob(c.getColumnIndex("foto"));
+            this.foto = BitmapFactory.decodeByteArray(img,0,img.length);
+
         }
         c.close();
         this.close();
     }
 
 
-    public void put(String nome, String email, String cep, String dtNasc, String senha){
+    public void put(String nome, String email, String cep, String dtNasc, String senha, Bitmap foto){
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(DBContract.EntdUsuario.COLUMN_NAME_NOME, nome);
@@ -128,6 +142,7 @@ public class UsuarioDAO{
         values.put(DBContract.EntdUsuario.COLUMN_NAME_CEP,cep);
         values.put(DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,dtNasc);
         values.put(DBContract.EntdUsuario.COLUMN_NAME_SENHA,senha);
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_FOTO, BitmapUtil.getBitmapAsByteArray(foto));
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -145,7 +160,9 @@ public class UsuarioDAO{
                 DBContract.EntdUsuario.COLUMN_NAME_EMAIL,
                 DBContract.EntdUsuario.COLUMN_NAME_CEP,
                 DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,
-                DBContract.EntdUsuario.COLUMN_NAME_SENHA
+                DBContract.EntdUsuario.COLUMN_NAME_SENHA,
+                DBContract.EntdUsuario.COLUMN_NAME_FOTO
+
         };
 
         String sortOrder =
@@ -170,6 +187,8 @@ public class UsuarioDAO{
             novo.cep = c.getString(c.getColumnIndex("cep"));
             novo.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
             novo.senha = c.getString(c.getColumnIndex("senha"));
+            byte[] img = c.getBlob(c.getColumnIndex("foto"));
+            novo.foto = BitmapFactory.decodeByteArray(img,0,img.length);
             listUsuarios.add(novo);
         }
         c.close();
@@ -183,6 +202,7 @@ public class UsuarioDAO{
         values.put(DBContract.EntdUsuario.COLUMN_NAME_CEP,cep);
         values.put(DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,dtNasc);
         values.put(DBContract.EntdUsuario.COLUMN_NAME_SENHA,senha);
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_FOTO, BitmapUtil.getBitmapAsByteArray(foto));
 
         String selection = DBContract.EntdUsuario._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -225,6 +245,8 @@ public class UsuarioDAO{
         return senha;
     }
 
+    public Bitmap getFoto(){ return foto;}
+
     public static ArrayList<String> getCredenciais(Context c)
     {
         ArrayList<String> credenciais = new ArrayList<>();
@@ -235,4 +257,13 @@ public class UsuarioDAO{
         dao.close();
         return credenciais;
     }
+
+
+
+//    public String getFoto() {
+//        return foto;
+//    }
+
+//    public void setEmail(String email){ this.email = email;}
+
 }

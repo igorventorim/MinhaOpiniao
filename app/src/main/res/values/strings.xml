@@ -41,6 +41,19 @@
     <string name="enviar_avaliacao">Enviar avaliação :)</string>
     <string name="area_comercial">Área Comercial</string>
     <string name="localizacao">Localização</string>
+    <string name="logged_sucess">LOGADO COM SUCESSO!</string>
+    <string name="DB_NAME">MinhaOpiniao.db</string>
+    
+    <string name="minha_conta">Minha Conta</string>
+    <string name="add_estabelecimento">Adicionar Estabelecimento</string>
+    <string name="meus_estabelecimentos">Meus Estabelecimentos</string>
+    <string name="fale_conosco">Fale Conosco</string>
+    <string name="sair">Sair</string>
+    <string name="sobre_app">Sobre o Aplicativo</string>
+    <string name="duvida_freq">Dúvidas Frequentes</string>
+    <string name="curta_facebook">Curta no Facebook</string>
+    <string name="avalie_google">Avalie na Google Play</string>
+    <string name="termos_uso">Termos de Uso</string>
 
     <string-array name="atributos_avaliacao">
         <item>Ótimo</item>

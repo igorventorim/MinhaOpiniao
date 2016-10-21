@@ -18,6 +18,7 @@ public final class DBContract {
         public static final String COLUMN_NAME_CEP = "cep";
         public static final String COLUMN_NAME_DATA_NASC = "dataNasc";
         public static final String COLUMN_NAME_SENHA = "senha";
+        public static final String COLUMN_NAME_FOTO = "foto";
     }
 
 

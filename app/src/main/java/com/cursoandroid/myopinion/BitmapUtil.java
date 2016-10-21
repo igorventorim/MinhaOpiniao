@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * Created by igor on 14/09/16.
      * Created by igor on 14/09/16.
@@ -47,5 +49,11 @@ import android.graphics.BitmapFactory;
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             return BitmapFactory.decodeResource(res, resId, options);
+        }
+
+        public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+            return outputStream.toByteArray();
         }
 }

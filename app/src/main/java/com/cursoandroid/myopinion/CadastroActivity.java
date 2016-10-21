@@ -60,7 +60,7 @@ public class CadastroActivity extends AppCompatActivity {
                if(verificaDados()) {
                    UsuarioDAO user = new UsuarioDAO(getApplicationContext());
                    user.open("write");
-                   user.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString());
+                   user.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString(), BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
                    user.close();
                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
                    finish();

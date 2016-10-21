@@ -42,11 +42,16 @@ import android.widget.Toast;
 
 import com.cursoandroid.myopinion.domain.UsuarioDAO;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,7 +154,19 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(getApplicationContext(),"LOGADO COM SUCESSO",Toast.LENGTH_LONG).show();
+                final AccessToken accessToken = loginResult.getAccessToken();
+
+                GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject user, GraphResponse graphResponse) {
+//                        fbUser.setEmail(user.optString("email"));
+//                        fbUser.setName(user.optString("name"));
+//                        fbUser.setId(user.optString("id"));
+                        telaPrincipal.putExtra("email",user.optString("email"));
+                    }
+                }).executeAsync();
+                Log.d("Result",request.toString());
+                Toast.makeText(getApplicationContext(),getString(R.string.logged_sucess),Toast.LENGTH_LONG).show();
                 startActivity(telaPrincipal);
                 finish();
             }
@@ -321,6 +338,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 writeUserSharedPreferences(id);
+                Toast.makeText(getApplicationContext(),getString(R.string.logged_sucess),Toast.LENGTH_LONG).show();
                 startActivity(telaPrincipal);
                 finish();
             } else {
