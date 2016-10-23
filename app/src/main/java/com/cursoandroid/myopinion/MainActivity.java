@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
+        mList = estabelecimentoDAO.getEstabelecimentos();
+        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
         adapter.setmRecyclerViewOnClickListenerHack(this);
         recyclerView.setAdapter(adapter);
         IProfile profile;
@@ -180,6 +181,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+//        estabelecimentoDAO.read((int)estabelecimentoDAO.getEstabelecimento().getId());
+//        mList = estabelecimentoDAO.getEstabelecimentos();
+        mList = estabelecimentoDAO.getEstabelecimentos();
+//        Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
+        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
+        adapter.setmRecyclerViewOnClickListenerHack(this);
+        recyclerView.setAdapter(adapter);
     }
 
     private void initNavBar()
@@ -290,10 +298,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(requestCode == CADASTRAR_LOCAL && resultCode == RESULT_OK)
         {
-            Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
-            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
-            adapter.setmRecyclerViewOnClickListenerHack(this);
-            recyclerView.setAdapter(adapter);
+//            mList = estabelecimentoDAO.getEstabelecimentos();
+//            Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
+//            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
+//            adapter.setmRecyclerViewOnClickListenerHack(this);
+//            recyclerView.setAdapter(adapter);
         }
     }
 
@@ -304,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        Bundle b = new Bundle();
 //        b.putSerializable("estabelecimento",mList.get(position));
 //        estabelecimento.putExtras(b);
+        estabelecimento.putExtra("estabelecimento",mList.get(position));
+//        Toast.makeText(getApplicationContext(),""+mList.get(position+1),Toast.LENGTH_LONG).show();
         startActivity(estabelecimento);
     }
 

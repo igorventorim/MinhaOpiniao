@@ -58,14 +58,15 @@ public class EstabelecimentoDAO {
                 DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL,
                 DBContract.EntdEstabelecimento.COLUMN_NAME_NOTIFICACAO,
                 DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO,
-                DBContract.EntdEstabelecimento.COLUMN_NAME_RATE
+                DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,
+                DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION
         };
 
         String selection = DBContract.EntdEstabelecimento._ID+"=?";
         String[] selectionArgs = { String.valueOf(id) };
 
         Cursor c = db.query(
-                DBContract.EntdUsuario.TABLE_NAME,  // The table to query
+                DBContract.EntdEstabelecimento.TABLE_NAME,  // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
@@ -87,8 +88,9 @@ public class EstabelecimentoDAO {
             estabelecimento.setResponsavel( c.getString(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL)) );
             estabelecimento.setLatitude( c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_LATITUDE)) );
             estabelecimento.setLongitude( c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_LONGITUDE)) );
-            estabelecimento.setRating( String.valueOf(c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE))) );
+            estabelecimento.setRating( c.getFloat(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE)) );
             estabelecimento.setFoto( c.getBlob(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO)) );
+            estabelecimento.setNumAvaliacoes( c.getInt(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION)));
 
         }
         c.close();
@@ -110,6 +112,7 @@ public class EstabelecimentoDAO {
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL,responsavel);
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO, BitmapUtil.getBitmapAsByteArray(foto));
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,0);
+        values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION,0);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -136,6 +139,7 @@ public class EstabelecimentoDAO {
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL,responsavel);
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO, BitmapUtil.getBitmapAsByteArray(foto));
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,0);
+        values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION,0);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -165,10 +169,11 @@ public class EstabelecimentoDAO {
                 DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL,
                 DBContract.EntdEstabelecimento.COLUMN_NAME_NOTIFICACAO,
                 DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO,
-                DBContract.EntdEstabelecimento.COLUMN_NAME_RATE
+                DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,
+                DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION
         };
 
-        String sortOrder = DBContract.EntdEstabelecimento.COLUMN_NAME_RATE+ " ASC";
+        String sortOrder = DBContract.EntdEstabelecimento.COLUMN_NAME_RATE+ " DESC";
 
         Cursor c = db.query(
                 DBContract.EntdEstabelecimento.TABLE_NAME,  // The table to query
@@ -194,8 +199,9 @@ public class EstabelecimentoDAO {
             novo.setResponsavel( c.getString(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL)) );
             novo.setLatitude( c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_LATITUDE)) );
             novo.setLongitude( c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_LONGITUDE)) );
-            novo.setRating( String.valueOf(c.getDouble(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE))) );
-            novo.setFoto( c.getBlob(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO)) );
+            novo.setRating( c.getFloat(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE)) );
+            novo.setFoto( c.getBlob(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO)));
+            novo.setNumAvaliacoes( c.getInt(c.getColumnIndex(DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION)));
             listEstabelecimentos.add(novo);
         }
         c.close();
@@ -217,8 +223,9 @@ public class EstabelecimentoDAO {
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RESPONSAVEL,this.estabelecimento.getResponsavel());
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_LATITUDE,this.estabelecimento.getLatitude());
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_LONGITUDE,this.estabelecimento.getLongitude());
-        values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,Double.parseDouble(this.estabelecimento.getRating()));
+        values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_RATE,this.estabelecimento.getRating());
         values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_FOTO, this.estabelecimento.getFoto());
+        values.put(DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION, this.estabelecimento.getNumAvaliacoes());
 
         String selection = DBContract.EntdEstabelecimento._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(this.estabelecimento.getId()) };

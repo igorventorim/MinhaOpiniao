@@ -1,11 +1,17 @@
 package com.cursoandroid.myopinion;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
+import com.cursoandroid.myopinion.domain.Estabelecimento;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
@@ -15,22 +21,28 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AvaliacaoActivity extends AppCompatActivity {
 
-
+    private final String ESTABELECIMENTO = "estabelecimento";
     private MaterialSpinner atendimento,conforto,qualidade,custo,retornar,indicarAmigo;
     private ImageButton backAvaliacao;
     private Button avaliar;
     private CircleImageView imgEstabelecimento;
+    private TextView tvNameStore;
+    private EstabelecimentoDAO estabelecimentoDAO;
 
     private List<String> itens = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avaliacao);
-
+        estabelecimentoDAO = new EstabelecimentoDAO(this);
+        final Intent i = getIntent();
+        final Estabelecimento e = (Estabelecimento) i.getSerializableExtra(ESTABELECIMENTO);
         avaliar = (Button) findViewById(R.id.bt_avaliar);
         imgEstabelecimento = (CircleImageView) findViewById(R.id.profile_image);
+        tvNameStore = (TextView) findViewById(R.id.name_store);
 
-        imgEstabelecimento.setImageBitmap(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
+        imgEstabelecimento.setImageBitmap(e.getFotoBitmap());
+        tvNameStore.setText(e.getNome());
 
         initSpinners();
 
@@ -38,6 +50,18 @@ public class AvaliacaoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
               finish();
+            }
+        });
+
+        avaliar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                estabelecimentoDAO.read((int) e.getId());
+                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
+                estabelecimentoDAO.getEstabelecimento().calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
+                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
+                estabelecimentoDAO.update();
+                finish();
             }
         });
     }

@@ -52,7 +52,7 @@ public class EstabelecimentoAdapter extends RecyclerView.Adapter<Estabelecimento
         holder.ivEstabelecimento.setImageBitmap(mList.get(position).getFotoBitmap()); // SETAR IMAGEM DO VETOR
         holder.tvModel.setText(mList.get(position).getNome());
         holder.tvType.setText(mList.get(position).getTipoEstabelecimento());
-        holder.rvAvaliacao.setRating(Float.parseFloat(mList.get(position).getRating()));
+        holder.rvAvaliacao.setRating(mList.get(position).getRating()/*/(float)mList.get(position).getNumAvaliacoes()*/);
         holder.tvRegiao.setText(mList.get(position).getCidade());
     }
 

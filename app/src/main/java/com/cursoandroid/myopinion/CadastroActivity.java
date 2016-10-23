@@ -14,6 +14,8 @@ import com.cursoandroid.myopinion.domain.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
 
+    private final static String EMAIL = "email";
+    private final static String SENHA = "senha";
 
     private ImageButton backCadastro;
     private Button btCadastrar;
@@ -54,6 +56,10 @@ public class CadastroActivity extends AppCompatActivity {
                if(verificaDados()) {
                    usuarioDAO.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString(), BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
+                   Intent retorno = new Intent();
+                   retorno.putExtra(EMAIL,etEmail.getText().toString());
+                   retorno.putExtra(SENHA,etSenha.getText().toString());
+                   setResult(RESULT_OK,retorno);
                    finish();
                }
 

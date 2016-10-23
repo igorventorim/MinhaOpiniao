@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class AdicionaLocalAcitivity extends AppCompatActivity {
@@ -214,7 +215,7 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
             case RESULT_CAMERA:
                 if(resultCode == RESULT_OK) {
                     Bitmap mImageBitmap = BitmapFactory.decodeFile(String.valueOf(imgEstabelecimento));
-//                    foto = Bitmap.createScaledBitmap(mImageBitmap, 80, 80, true);
+//                    foto = Bitmap.createScaledBitmap(mImageBitmap, (int)(mImageBitmap.getWidth()*0.3),(int)(mImageBitmap.getHeight()*0.3), true);
                     foto = mImageBitmap;
                     imgArmazenada.setVisibility(View.VISIBLE);
                 }
@@ -230,6 +231,12 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
                     String picturePath = cursor.getString(columnIndex);
                     cursor.close();
                     foto = BitmapFactory.decodeFile(picturePath);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    foto.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] bytes = stream.toByteArray();
+                    foto = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                    setresult.putExtra("BMP",bytes);
+
                     imgArmazenada.setVisibility(View.VISIBLE);
                 }
         }

@@ -16,7 +16,7 @@ public class Estabelecimento implements Serializable{
     private long id;
     private String nome;
     private String tipoEstabelecimento;
-    private String rating;
+    private float rating;
     private String estado;
     private String cidade;
     private String bairro;
@@ -26,6 +26,27 @@ public class Estabelecimento implements Serializable{
     private boolean gps;
     private boolean notificacao;
     private String responsavel;
+    private int numAvaliacoes;
+
+    public float getNota() {
+        return nota;
+    }
+
+//    public Estabelecimento setNota(float nota) {
+//        this.nota = nota;
+//        return this;
+//    }
+
+    private float nota;
+
+    public int getNumAvaliacoes() {
+        return numAvaliacoes;
+    }
+
+    public Estabelecimento setNumAvaliacoes(int numAvaliacoes) {
+        this.numAvaliacoes = numAvaliacoes;
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -63,13 +84,12 @@ public class Estabelecimento implements Serializable{
         return this;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public Estabelecimento setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
-        return this;
     }
 
     public String getCidade() {
@@ -140,13 +160,28 @@ public class Estabelecimento implements Serializable{
         return this;
     }
 
+    public void setResponsavel(String responsavel){ this.responsavel = responsavel; }
+
     public String getResponsavel() {
         return responsavel;
     }
 
-    public Estabelecimento setResponsavel(String responsavel) {
-        this.responsavel = responsavel;
-        return this;
+//    public Estabelecimento setResponsavel(String responsavel) {
+//        this.responsavel = responsavel;
+//        return this;
+//    }
+
+    public void calculaNota(int atendimento, int conforto, int qualidade, int custo, int retornaria, int indicaria)
+    {
+        float soma = (5 - atendimento) + (5 - conforto) + (5 - qualidade) + (5 -(custo)*(5/2)) + (5 - retornaria*5) + (5 - indicaria*5);
+        soma = (float) (soma/6.0);
+        rating *= (float)numAvaliacoes;
+        numAvaliacoes++;
+        rating += soma;
+        rating /= (float)numAvaliacoes;
+
+//        nota = rating/((float)numAvaliacoes);
     }
+
 
 }

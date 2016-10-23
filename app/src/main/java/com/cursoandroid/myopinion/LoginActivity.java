@@ -52,6 +52,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private UserLoginTask mAuthTask = null;
 
+    Intent telaPrincipal,telaCadastro;
+    SharedPreferences sharedPref;
+    CallbackManager callbackManager;
+    private UsuarioDAO usuarioDAO;
+
+    private final static int TELA_CADASTRO = 1;
+    private final static String EMAIL = "email";
+    private final static String SENHA = "senha";
+
     // UI references.
     private LoginButton loginButton;
     private AutoCompleteTextView mEmailView;
@@ -59,10 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
     private TextView esqueciSenha;
-    Intent telaPrincipal,telaCadastro;
-    SharedPreferences sharedPref;
-    CallbackManager callbackManager;
-    private UsuarioDAO usuarioDAO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         cadastrar.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(telaCadastro);
+                startActivityForResult(telaCadastro,TELA_CADASTRO);
             }
         });
 
@@ -229,6 +235,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == TELA_CADASTRO && resultCode == RESULT_OK)
+        {
+            mEmailView.setText(data.getStringExtra(EMAIL));
+            mPasswordView.setText(data.getStringExtra(SENHA));
+        }
     }
 
     private boolean isEmailValid(String email) {

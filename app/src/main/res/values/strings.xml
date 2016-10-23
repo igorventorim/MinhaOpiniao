@@ -140,9 +140,9 @@
     </string-array>
 
     <string-array name="questao_custo">
-        <item>Elevado</item>
-        <item>Moderado</item>
         <item>Atraente</item>
+        <item>Moderado</item>
+        <item>Elevado</item>
     </string-array>
 
     <string-array name="list_areas">

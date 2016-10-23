@@ -36,7 +36,17 @@ public final class DBContract {
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_NAME_GPS = "gps";
         public static final String COLUMN_NAME_RATE = "rate";
+        public static final String COLUMN_NAME_NUM_AVALIATION = "numAvaliacao";
     }
+
+//    public static abstract class EntdAvaliacao implements BaseColumns
+//    {
+//        public static final String TABLE_NAME = "avaliacao";
+//        public static final String COLUMN_NAME_ID_ESTABELECIMENTO = "idEstabelecimento";
+////        public static final String COLUMN_NAME_NUM_AVALIACOES
+//
+//    }
+
 
 
 }
