@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.cursoandroid.myopinion.R;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
+import com.github.ornolfr.ratingview.RatingView;
 
 import java.util.List;
 
@@ -47,10 +48,12 @@ public class EstabelecimentoAdapter extends RecyclerView.Adapter<Estabelecimento
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.ivEstabelecimento.setImageBitmap(mList.get(position).getImg()); // SETAR IMAGEM DO VETOR
-        holder.tvModel.setText(mList.get(position).getName());
 
-
+        holder.ivEstabelecimento.setImageBitmap(mList.get(position).getFotoBitmap()); // SETAR IMAGEM DO VETOR
+        holder.tvModel.setText(mList.get(position).getNome());
+        holder.tvType.setText(mList.get(position).getTipoEstabelecimento());
+        holder.rvAvaliacao.setRating(Float.parseFloat(mList.get(position).getRating()));
+        holder.tvRegiao.setText(mList.get(position).getCidade());
     }
 
     @Override
@@ -61,13 +64,17 @@ public class EstabelecimentoAdapter extends RecyclerView.Adapter<Estabelecimento
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView ivEstabelecimento;
-        public TextView tvModel;
+        public TextView tvModel,tvType,tvRegiao;
+        public RatingView rvAvaliacao;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             ivEstabelecimento = (ImageView) itemView.findViewById(R.id.iv_estabelecimento);
             tvModel = (TextView) itemView.findViewById(R.id.tv_model);
+            tvType = (TextView) itemView.findViewById(R.id.tv_tipo_estabelecimento);
+            tvRegiao = (TextView) itemView.findViewById(R.id.tv_regiao);
+            rvAvaliacao = (RatingView) itemView.findViewById(R.id.rv_avaliacao);
 
             itemView.setOnClickListener(this);
         }

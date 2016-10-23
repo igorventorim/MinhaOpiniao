@@ -1,4 +1,4 @@
-package com.cursoandroid.myopinion.domain;
+package com.cursoandroid.myopinion.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,40 +6,30 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.cursoandroid.myopinion.BitmapUtil;
-import com.cursoandroid.myopinion.database.DBContract;
-import com.cursoandroid.myopinion.database.DBHelper;
+import com.cursoandroid.myopinion.domain.Usuario;
 
 import java.util.ArrayList;
 
 /**
- * Created by igor on 19/10/16.
+ * Created by igor on 22/10/16.
  */
 
-public class UsuarioDAO{
+public class UsuarioDAO {
 
     SQLiteDatabase db;
     DBHelper mDbHelper;
 
-    private long id;
-    private String nome;
-    private String email;
-    private String dtNasc;
-    private String cep;
-    private String senha;
-
-    private Bitmap foto;
+    private Usuario usuario;
 
     public UsuarioDAO(Context context)
     {
         mDbHelper = new DBHelper(context);
+        usuario = new Usuario();
     }
 
-    private UsuarioDAO(){}
-
-    public void open(String mode)
+    private void open(String mode)
     {
         if(mode.equals("write"))
         {
@@ -52,6 +42,7 @@ public class UsuarioDAO{
 
     public void read(String nome)
     {
+        this.open("read");
         String[] projection = {
                 DBContract.EntdUsuario._ID,
                 DBContract.EntdUsuario.COLUMN_NAME_NOME,
@@ -76,17 +67,17 @@ public class UsuarioDAO{
 
         if(findEntd = c.moveToNext())
         {
-            byte[] img = c.getBlob(c.getColumnIndex("foto"));
-            this.id = c.getLong(c.getColumnIndex("_id"));
-            this.nome = c.getString(c.getColumnIndex("nome"));
-            this.email = c.getString(c.getColumnIndex("email"));
-            this.cep = c.getString(c.getColumnIndex("cep"));
-            this.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
-            this.senha = c.getString(c.getColumnIndex("senha"));
-            this.foto = BitmapFactory.decodeByteArray(img,0,img.length);
+            this.usuario.setFoto( c.getBlob(c.getColumnIndex("foto")) );
+            this.usuario.setId( c.getLong(c.getColumnIndex("_id")) );
+            this.usuario.setNome( c.getString(c.getColumnIndex("nome")) );
+            this.usuario.setEmail( c.getString(c.getColumnIndex("email")) );
+            this.usuario.setCep( c.getString(c.getColumnIndex("cep")) );
+            this.usuario.setDtNasc( c.getString(c.getColumnIndex("dataNasc")) );
+            this.usuario.setSenha( c.getString(c.getColumnIndex("senha")) );
+//            this.foto = BitmapFactory.decodeByteArray(img,0,img.length);
         }
         c.close();
-
+        this.close();
     }
 
 
@@ -119,15 +110,13 @@ public class UsuarioDAO{
         if(findEntd = c.moveToNext())
         {
 
-            this.id = c.getLong(c.getColumnIndex("_id"));
-            this.nome = c.getString(c.getColumnIndex("nome"));
-            this.email = c.getString(c.getColumnIndex("email"));
-            this.cep = c.getString(c.getColumnIndex("cep"));
-            this.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
-            this.senha = c.getString(c.getColumnIndex("senha"));
-            byte[] img = c.getBlob(c.getColumnIndex("foto"));
-            this.foto = BitmapFactory.decodeByteArray(img,0,img.length);
-
+            this.usuario.setFoto( c.getBlob(c.getColumnIndex("foto")) );
+            this.usuario.setId( c.getLong(c.getColumnIndex("_id")) );
+            this.usuario.setNome( c.getString(c.getColumnIndex("nome")) );
+            this.usuario.setEmail( c.getString(c.getColumnIndex("email")) );
+            this.usuario.setCep( c.getString(c.getColumnIndex("cep")) );
+            this.usuario.setDtNasc( c.getString(c.getColumnIndex("dataNasc")) );
+            this.usuario.setSenha( c.getString(c.getColumnIndex("senha")) );
         }
         c.close();
         this.close();
@@ -136,6 +125,7 @@ public class UsuarioDAO{
 
     public void put(String nome, String email, String cep, String dtNasc, String senha, Bitmap foto){
         // Create a new map of values, where column names are the keys
+        this.open("write");
         ContentValues values = new ContentValues();
         values.put(DBContract.EntdUsuario.COLUMN_NAME_NOME, nome);
         values.put(DBContract.EntdUsuario.COLUMN_NAME_EMAIL,email);
@@ -150,10 +140,13 @@ public class UsuarioDAO{
                 DBContract.EntdUsuario.TABLE_NAME,
                 null,
                 values);
+
+        this.close();
     }
 
-    public ArrayList<UsuarioDAO> getUsuarios(){
-        ArrayList<UsuarioDAO> listUsuarios = new ArrayList<>();
+    public ArrayList<Usuario> getUsuarios(){
+        this.open("read");
+        ArrayList<Usuario> listUsuarios = new ArrayList<>();
         String[] projection = {
                 DBContract.EntdUsuario._ID,
                 DBContract.EntdUsuario.COLUMN_NAME_NOME,
@@ -180,15 +173,14 @@ public class UsuarioDAO{
         boolean findEntd;
         while((findEntd = c.moveToNext()))
         {
-            UsuarioDAO novo = new UsuarioDAO();
-            novo.id = c.getLong(c.getColumnIndex("_id"));
-            novo.nome = c.getString(c.getColumnIndex("nome"));
-            novo.email = c.getString(c.getColumnIndex("email"));
-            novo.cep = c.getString(c.getColumnIndex("cep"));
-            novo.dtNasc = c.getString(c.getColumnIndex("dataNasc"));
-            novo.senha = c.getString(c.getColumnIndex("senha"));
-            byte[] img = c.getBlob(c.getColumnIndex("foto"));
-            novo.foto = BitmapFactory.decodeByteArray(img,0,img.length);
+            Usuario novo = new Usuario();
+            novo.setFoto( c.getBlob(c.getColumnIndex("foto")) );
+            novo.setId( c.getLong(c.getColumnIndex("_id")) );
+            novo.setNome( c.getString(c.getColumnIndex("nome")) );
+            novo.setEmail( c.getString(c.getColumnIndex("email")) );
+            novo.setCep( c.getString(c.getColumnIndex("cep")) );
+            novo.setDtNasc( c.getString(c.getColumnIndex("dataNasc")) );
+            novo.setSenha( c.getString(c.getColumnIndex("senha")) );
             listUsuarios.add(novo);
         }
         c.close();
@@ -196,74 +188,44 @@ public class UsuarioDAO{
     }
 
     public void update(){
+        this.open("write");
         ContentValues values = new ContentValues();
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_NOME, nome);
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_EMAIL, email);
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_CEP,cep);
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,dtNasc);
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_SENHA,senha);
-        values.put(DBContract.EntdUsuario.COLUMN_NAME_FOTO, BitmapUtil.getBitmapAsByteArray(foto));
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_NOME, this.usuario.getNome());
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_EMAIL, this.usuario.getEmail());
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_CEP, this.usuario.getCep());
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_DATA_NASC,this.usuario.getDtNasc());
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_SENHA,this.usuario.getSenha());
+        values.put(DBContract.EntdUsuario.COLUMN_NAME_FOTO, this.usuario.getFoto());
 
         String selection = DBContract.EntdUsuario._ID + " LIKE ?";
-        String[] selectionArgs = { String.valueOf(id) };
+        String[] selectionArgs = { String.valueOf(this.usuario.getId()) };
 
         int count = db.update(
                 DBContract.EntdUsuario.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
+
+        this.close();
     }
 
-    public void close(){ db.close();}
+    private void close(){ db.close();}
 
     public void delete(){
         db.execSQL("delete from "+ DBContract.EntdUsuario.TABLE_NAME);
     }
 
-
-    public long getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getDtNasc() {
-        return dtNasc;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public Bitmap getFoto(){ return foto;}
-
-    public static ArrayList<String> getCredenciais(Context c)
+    public ArrayList<String> getCredenciais()
     {
         ArrayList<String> credenciais = new ArrayList<>();
-        UsuarioDAO dao = new UsuarioDAO(c);
-        dao.open("read");
-        ArrayList<UsuarioDAO> listUsuarios = dao.getUsuarios();
-        for (UsuarioDAO user: listUsuarios){credenciais.add(user.getEmail()+":"+user.getSenha()+":"+user.getId());}
-        dao.close();
+        this.open("read");
+        ArrayList<Usuario> listUsuarios = this.getUsuarios();
+        for (Usuario user: listUsuarios){credenciais.add(user.getEmail()+":"+user.getSenha()+":"+user.getId());}
+        this.close();
         return credenciais;
     }
 
-
-
-//    public String getFoto() {
-//        return foto;
-//    }
-
-//    public void setEmail(String email){ this.email = email;}
-
+    public Usuario getUsuario() {
+        return usuario;
+    }
 }

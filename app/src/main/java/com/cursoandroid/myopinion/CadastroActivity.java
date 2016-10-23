@@ -2,22 +2,15 @@ package com.cursoandroid.myopinion;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.cursoandroid.myopinion.domain.UsuarioDAO;
-
-import java.util.ArrayList;
+import com.cursoandroid.myopinion.database.UsuarioDAO;
+import com.cursoandroid.myopinion.domain.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
 
@@ -25,12 +18,13 @@ public class CadastroActivity extends AppCompatActivity {
     private ImageButton backCadastro;
     private Button btCadastrar;
     private EditText etDataNasc,etCEP,etNome,etEmail,etSenha,etConfirmaSenha;
+    private UsuarioDAO usuarioDAO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
         Intent dados = getIntent();
-
+        usuarioDAO = new UsuarioDAO(getApplicationContext());
 
         backCadastro = (ImageButton) findViewById(R.id.back_cadastro);
         backCadastro.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +52,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                if(verificaDados()) {
-                   UsuarioDAO user = new UsuarioDAO(getApplicationContext());
-                   user.open("write");
-                   user.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString(), BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
-                   user.close();
+                   usuarioDAO.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString(), BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
                    finish();
                }

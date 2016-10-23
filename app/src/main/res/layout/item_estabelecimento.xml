@@ -57,23 +57,25 @@
             android:textColor="@color/colorAccent"/>
 
         <TextView
+            android:id="@+id/tv_tipo_estabelecimento"
             android:layout_marginTop="10dp"
             android:textSize="12dp"
             android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
             android:drawablePadding="10dp"
             android:layout_height="wrap_content"
-            android:text="Bar ou Restaurante"
+            android:text=""
             android:drawableLeft="@drawable/ic_area_comercial"/>
 
         <TextView
+            android:id="@+id/tv_regiao"
             android:layout_marginTop="5dp"
             android:textSize="12dp"
             android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
             android:drawablePadding="10dp"
             android:layout_height="wrap_content"
-            android:text="VITORIA-ES"
+            android:text=""
             android:layout_gravity="center_vertical"
             android:drawableLeft="@drawable/ic_localizacao"/>
 
@@ -95,6 +97,7 @@
 
 
             <com.github.ornolfr.ratingview.RatingView
+            android:id="@+id/rv_avaliacao"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,7 +109,7 @@
             app:drawable_size="26dp"
             app:is_indicator="true"
             app:max_count="5"
-            app:rating="2.5" />
+            app:rating="0.0" />
 
         <!--</LinearLayout>-->
     </LinearLayout>

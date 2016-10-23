@@ -96,6 +96,12 @@
     <string name="recup_senha">E-mail enviado com sucesso!</string>
     <string name="email_invalido">Informe um e-mail válido!</string>
     <string name="senha_pequena">Informe uma senha com tamanho maior que 4.</string>
+    <string name="imagem_armazenada">Imagem armazenada com sucesso!</string>
+    <string name="select_local_img">Encontrar a imagem em</string>
+    <string name="GPSAlertDialogTitle">GPS</string>
+    <string name="GPSAlertDialogMessage">Configurar GPS</string>
+    <string name="action_settings">Ok</string>
+    <string name="cancel">Cancelar</string>
 
     <string-array name="colors">
         <item>#FFF</item>

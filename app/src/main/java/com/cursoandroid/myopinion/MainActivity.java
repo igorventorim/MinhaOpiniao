@@ -1,14 +1,13 @@
 package com.cursoandroid.myopinion;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
+import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -19,9 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,10 +25,9 @@ import android.widget.Toast;
 
 import com.cursoandroid.myopinion.adapter.EstabelecimentoAdapter;
 import com.cursoandroid.myopinion.adapter.RecyclerViewOnClickListenerHack;
+import com.cursoandroid.myopinion.database.UsuarioDAO;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
-import com.cursoandroid.myopinion.domain.UsuarioDAO;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
+import com.cursoandroid.myopinion.domain.Usuario;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
@@ -42,8 +37,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.StringHolder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
@@ -51,18 +44,15 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,RecyclerViewOnClickListenerHack {
 
+    private final int CADASTRAR_LOCAL = 2;
     private final int VOICE_RECOGNITION_REQUEST_CODE = 1;
-
     FloatingActionButton addEstabelecimento,verEstabelecimento;
-
     private Drawer navigationDrawerLeft;
     private AccountHeader headerNavigationLeft;
 
@@ -75,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<Estabelecimento> mList = new ArrayList<>();
     SharedPreferences sharedPref;
     private final int DEFAULT_INVALID_ID = -1;
+    EstabelecimentoDAO estabelecimentoDAO;
+    private UsuarioDAO usuarioDAO;
+
 //    String email;
 
     @Override
@@ -83,34 +76,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         final Intent data = getIntent();
         sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
-        final UsuarioDAO user = new UsuarioDAO(getApplicationContext());
-        if(isLogged()){ user.read(readIdUserSharedPreferences());}
-//        buildUser();
-
-        Estabelecimento n = new Estabelecimento();
-        n.setName("BAR DO SEU ZÉ");
-        n.setImg(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
-        mList.add(n);
-
-        Estabelecimento m = new Estabelecimento();
-        m.setName("BAR DO SEU ZÉ");
-        m.setImg(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
-        mList.add(m);
-
-        Estabelecimento k = new Estabelecimento();
-        k.setName("BAR DO LUIZ");
-        k.setImg(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
-        mList.add(k);
-
-        Estabelecimento l = new Estabelecimento();
-        l.setName("BAR DO LUIZ");
-        l.setImg(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
-        mList.add(l);
-
-        Estabelecimento j = new Estabelecimento();
-        j.setName("BAR");
-        j.setImg(BitmapUtil.decodeSampledBitmapFromResource(getResources(), R.drawable.barteste, 200, 200));
-        mList.add(j);
+//        final Usuario user = new Usuario(getApplicationContext());
+        usuarioDAO = new UsuarioDAO(getApplicationContext());
+        if(isLogged()){ usuarioDAO.read(readIdUserSharedPreferences());}
+        estabelecimentoDAO = new EstabelecimentoDAO(getApplicationContext());
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_estabelecimentos);
         addEstabelecimento = (FloatingActionButton) findViewById(R.id.adicionar_loja);
@@ -120,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addEstabelecimento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(adicionaLocal);
+                startActivityForResult(adicionaLocal,CADASTRAR_LOCAL);
             }
         });
 
@@ -130,14 +99,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
+        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
         adapter.setmRecyclerViewOnClickListenerHack(this);
         recyclerView.setAdapter(adapter);
         IProfile profile;
-
+        final Usuario user = usuarioDAO.getUsuario();
         if(user.getId() != 0)
         {
-            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(user.getFoto()).withIdentifier(100);
+            profile = new ProfileDrawerItem().withName(usuarioDAO.getUsuario().getNome()).withEmail(user.getEmail()).withIcon(user.getFotoBitmap()).withIdentifier(100);
         }
         else{profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
 
@@ -204,6 +173,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         );
 
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void initNavBar()
@@ -311,6 +287,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                Toast.makeText(this,matches.get(0),Toast.LENGTH_SHORT).show();
             }
         }
+
+        if(requestCode == CADASTRAR_LOCAL && resultCode == RESULT_OK)
+        {
+            Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
+            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
+            adapter.setmRecyclerViewOnClickListenerHack(this);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -347,7 +331,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         return sharedPref.getBoolean(getString(R.string.saved_logged),false);
     }
-
-
 
 }
