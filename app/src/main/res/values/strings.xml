@@ -161,6 +161,7 @@
     <string name="preference_logged">com.cursoandroid.myopinion.logged</string>
     <string name="saved_logged">logado</string>
     <string name="user_id">id do usuario</string>
+    <string name="ultimo_acesso">Ultimo acesso</string>
 
     <string name="facebook_app_id">333231187053263</string>
 

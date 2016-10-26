@@ -86,12 +86,12 @@ public class AvaliacaoActivity extends AppCompatActivity {
         retornar.setItems(getResources().getStringArray(R.array.questao_objetiva));
         indicarAmigo.setItems(getResources().getStringArray(R.array.questao_objetiva));
 
-        atendimento.setText("");
-        conforto.setText("");
-        qualidade.setText("");
-        custo.setText("");
-        retornar.setText("");
-        indicarAmigo.setText("");
+//        atendimento.setText("");
+//        conforto.setText("");
+//        qualidade.setText("");
+//        custo.setText("");
+//        retornar.setText("");
+//        indicarAmigo.setText("");
     }
 
 

@@ -135,6 +135,13 @@ public class LoginActivity extends AppCompatActivity {
         {
             startActivity(telaPrincipal);
             finish();
+        }else
+        {
+            mEmailView.setText(sharedPref.getString(getString(R.string.ultimo_acesso),""));
+            if(!mEmailView.getText().toString().equals("")) {
+                mPasswordView.setFocusable(true);
+                mPasswordView.requestFocus();
+            }
         }
     }
 
@@ -363,6 +370,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(getString(R.string.saved_logged),true);
         editor.putInt(getString(R.string.user_id),id);
+        editor.putString(getString(R.string.ultimo_acesso),mEmailView.getText().toString());
         editor.commit();
     }
 

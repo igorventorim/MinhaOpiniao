@@ -144,7 +144,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 startActivity(intent);
                                 LoginManager.getInstance().logOut();
                                 finish();
+                            }else if(drawerItem.getIdentifier() == 2)
+                            {
+                                startActivityForResult(adicionaLocal,CADASTRAR_LOCAL);
+                                navigationDrawerLeft.closeDrawer();
                             }
+
+
                         }
 
                         return false;

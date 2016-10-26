@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 public class Estabelecimento implements Serializable{
 
-    public Estabelecimento(){}
+//    public Estabelecimento(){}
 
     private long id;
     private String nome;
