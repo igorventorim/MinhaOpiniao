@@ -62,7 +62,8 @@ public class Estabelecimento implements Serializable{
     }
 
     public Estabelecimento setNome(String nome) {
-        this.nome = nome;
+
+        this.nome = nome.substring(0,1).toUpperCase().concat(nome.substring(1));
         return this;
     }
 

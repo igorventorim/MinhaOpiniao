@@ -51,4 +51,12 @@ public class SqlStrings {
             DBContract.EntdEstabelecimento.COLUMN_NAME_NUM_AVALIATION + INTEGER_TYPE +" )";
 
     static final  String SQL_DELETE_TABLE_ESTABELECIMENTO = "DROP TABLE IF EXISTS " + DBContract.EntdEstabelecimento.TABLE_NAME;
+
+    static final String SQL_CREATE_TABLE_FAVORITO =
+            "CREATE TABLE IF NOT EXISTS " + DBContract.EntdFavorito.TABLE_NAME+ "("+
+            DBContract.EntdFavorito._ID +" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"+
+            DBContract.EntdFavorito.COLUMN_NAME_ID_FAVORITO+ INTEGER_TYPE +" )";
+
+    static final String SQL_DELETE_TABLE_FAVORITO = "DROP TABLE IF EXISTS " + DBContract.EntdFavorito.TABLE_NAME;
+
 }

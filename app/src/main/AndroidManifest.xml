@@ -51,8 +51,6 @@
             android:name=".RecuperarSenhaActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ReclamarActivity"
-            android:screenOrientation="portrait"/>
         <activity
             android:name=".AvaliacaoActivity"
             android:screenOrientation="portrait"

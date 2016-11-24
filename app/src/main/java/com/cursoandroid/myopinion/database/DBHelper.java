@@ -20,12 +20,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SqlStrings.SQL_CREATE_TABLE_USUARIO);
         db.execSQL(SqlStrings.SQL_CREATE_TABLE_ESTABELECIMENTO);
+        db.execSQL(SqlStrings.SQL_CREATE_TABLE_FAVORITO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SqlStrings.SQL_DELETE_TABLE_USUARIO);
-        db.execSQL(SqlStrings.SQL_CREATE_TABLE_ESTABELECIMENTO);
+        db.execSQL(SqlStrings.SQL_DELETE_TABLE_ESTABELECIMENTO);
+        db.execSQL(SqlStrings.SQL_DELETE_TABLE_FAVORITO);
         onCreate(db);
     }
 

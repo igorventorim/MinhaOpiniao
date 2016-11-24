@@ -34,14 +34,14 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-        <ImageButton
-        android:id="@+id/bt_add_momento"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:src="@drawable/ic_add_moment"
-        android:background="@null"
-        android:layout_marginRight="14dp"/>
+        <!--<ImageButton-->
+        <!--android:id="@+id/bt_add_momento"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="right"-->
+        <!--android:src="@drawable/ic_add_moment"-->
+        <!--android:background="@null"-->
+        <!--android:layout_marginRight="14dp"/>-->
 
         <ImageButton
         android:id="@+id/bt_add_favorito"
@@ -184,31 +184,32 @@
                 android:layout_marginRight="5dp"/>
         </LinearLayout>
 
-        <android.support.design.widget.CoordinatorLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:layout_marginTop="15dp">
+        <!--<android.support.design.widget.CoordinatorLayout-->
+            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--android:layout_marginTop="15dp">-->
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="330dp"
-                android:layout_gravity="bottom"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingBottom="30dp"
-                android:paddingEnd="60dp"
-                android:paddingLeft="60dp"
-                android:paddingRight="60dp"
-                android:paddingStart="60dp">
-            </android.support.v4.view.ViewPager>
+            <!--<android.support.v4.view.ViewPager-->
+                <!--android:id="@+id/viewPager"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="330dp"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--android:clipToPadding="false"-->
+                <!--android:overScrollMode="never"-->
+                <!--android:paddingBottom="30dp"-->
+                <!--android:paddingEnd="60dp"-->
+                <!--android:paddingLeft="60dp"-->
+                <!--android:paddingRight="60dp"-->
+                <!--android:paddingStart="60dp">-->
+            <!--</android.support.v4.view.ViewPager>-->
 
-        </android.support.design.widget.CoordinatorLayout>
+        <!--</android.support.design.widget.CoordinatorLayout>-->
 
 
     <Button
+        android:layout_marginTop="30dp"
         android:id="@+id/avaliar_estabelecimento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -217,7 +218,7 @@
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
         android:background="@drawable/button_blue"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="50dp"
         />
 
         <LinearLayout

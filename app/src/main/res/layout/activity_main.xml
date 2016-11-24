@@ -26,7 +26,7 @@
         android:id="@+id/ntb"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:ntb_animation_duration="200"
+        app:ntb_animation_duration="350"
         app:ntb_corners_radius="4dp"
         app:ntb_badged="true"
         app:ntb_titled="true"
@@ -62,7 +62,7 @@
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimaryDark"/>
+            android:background="@color/colorPrimaryDark" />
 
     <!--</android.support.v4.view.ViewPager>-->
 

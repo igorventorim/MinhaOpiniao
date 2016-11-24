@@ -39,6 +39,12 @@ public final class DBContract {
         public static final String COLUMN_NAME_NUM_AVALIATION = "numAvaliacao";
     }
 
+    public static abstract class EntdFavorito implements BaseColumns
+    {
+        public static final String TABLE_NAME = "favorito";
+        public static final String COLUMN_NAME_ID_FAVORITO = "idFavorito";
+    }
+
 //    public static abstract class EntdAvaliacao implements BaseColumns
 //    {
 //        public static final String TABLE_NAME = "avaliacao";

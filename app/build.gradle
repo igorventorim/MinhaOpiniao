@@ -43,7 +43,7 @@ dependencies {
     compile 'com.jaredrummler:material-spinner:1.1.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'info.hoang8f:android-segmented:1.0.6'
-    compile 'com.cuboid:cuboidcirclebutton:1.0.3'
+//    compile 'com.cuboid:cuboidcirclebutton:1.0.3'
     compile 'com.github.andyxialm:ShapeImageView:d6c48dffa3'
     compile 'com.github.ornolfr:rating-view:0.1.2@aar'
     compile 'com.android.support:cardview-v7:24.2.1'

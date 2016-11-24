@@ -170,4 +170,52 @@ public class GPSController implements LocationListener,GoogleApiClient.Connectio
         return state;
     }
 
+    public double[] getCoordenada(Context c,String address)
+    {
+        double[] coordenadas = {0,0};
+        Geocoder geocoder = new Geocoder(c);
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocationName(address, 1);
+
+        if(addresses.size() > 0) {
+            coordenadas[0] = addresses.get(0).getLatitude();
+            coordenadas[1] = addresses.get(0).getLongitude();
+        }
+
+        return coordenadas;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public String getAddressFromLocation(Context context)
+    {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String result = null;
+        List<Address> addressList = null;
+        try {
+            addressList = geocoder.getFromLocation(this.getLatitude(), this.getLongitude(), 1);
+
+            if (addressList != null && addressList.size() > 0) {
+                Address address = addressList.get(0);
+                StringBuilder sb = new StringBuilder();
+//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+//                    sb.append(address.getAddressLine(i)).append("\n");
+//                }
+                String endereco = address.getAddressLine(0);
+                sb.append(endereco.substring(endereco.lastIndexOf("-")+2) + "-"+ address.getAddressLine(1)) ;
+
+                result = sb.toString();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }

@@ -26,6 +26,7 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 
 public class AdicionaLocalAcitivity extends AppCompatActivity {
 
@@ -74,8 +75,8 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         gpsController = new GPSController(getApplicationContext());
         spinEstado.setItems(getResources().getStringArray(R.array.list_estados));
         spinAreaComercial.setItems(getResources().getStringArray(R.array.list_areas));
-        spinEstado.setText("");
-        spinAreaComercial.setText("");
+//        spinEstado.setText("");
+//        spinAreaComercial.setText("");
 
         rbGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,16 +94,16 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
                     tvGps.setVisibility(View.GONE);
                     layoutInserirLocalizacao.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Por favor, ligue o GPS para utilizar este recurso!", Toast.LENGTH_LONG).show();
-                } else {
+                }// else {
 
 
 //                    Toast.makeText(getApplicationContext(), "Cidade: "+gpsController.getCidade(getApplicationContext()), Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getApplicationContext(), "Estado: "+gpsController.getEstado(getApplicationContext()), Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(), "Latitute: "+String.valueOf(gpsController.getLatitude()), Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(), "Longitude: "+String.valueOf(gpsController.getLongitude()), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Latitute: "+String.valueOf(gpsController.getLatitude()), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Longitude: "+String.valueOf(gpsController.getLongitude()), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Endereço: "+ gpsController.getAddressFromLocation(getApplicationContext())  , Toast.LENGTH_LONG).show();
 
-
-                }
+                //}
 
             }
         });
@@ -158,13 +159,25 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
     {
         if(foto == null)
             return;
-        final String nome = etNomeEstabelecimento.getText().toString();
-        final String tipo = getResources().getStringArray(R.array.list_areas)[spinAreaComercial.getSelectedIndex()];
-        final String estado = getResources().getStringArray(R.array.list_estados)[spinEstado.getSelectedIndex()];
-        final String cidade = etCidade.getText().toString();
-        final String bairro = etBairro.getText().toString();
+         String nome = etNomeEstabelecimento.getText().toString().toLowerCase();
+         String tipo = getResources().getStringArray(R.array.list_areas)[spinAreaComercial.getSelectedIndex()];
+         String estado = (getResources().getStringArray(R.array.list_estados)[spinEstado.getSelectedIndex()].split(" - "))[1];
+         String cidade = etCidade.getText().toString();
+         String bairro = etBairro.getText().toString();
+         String address = estado +" ,"+  cidade+ " ," +bairro;
+        double coordenadas[] = gpsController.getCoordenada(this,address);
+
+        if(rbGps.isChecked())
+        {
+            String endereco[] = gpsController.getAddressFromLocation(this).split("-");
+            cidade = endereco[1];
+            estado = endereco[2];
+            bairro = endereco[0];
+        }
+
+
         boolean notificacoes = cbNotificacao.isChecked();
-//        final Bitmap img = foto;
+
         String responsavel = "";
         if(rbFunc.isChecked())
         {
@@ -177,7 +190,7 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         }else
             return;
 
-        estabelecimentoDAO.put(nome,tipo,estado,cidade,bairro,notificacoes,foto,responsavel);
+        estabelecimentoDAO.put(nome,tipo,estado,cidade,bairro,notificacoes,foto,responsavel,coordenadas[0],coordenadas[1]);
         Toast.makeText(getApplicationContext(),"Estabelecimento cadastrado com sucesso!",Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
         finish();
@@ -214,8 +227,8 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         {
             case RESULT_CAMERA:
                 if(resultCode == RESULT_OK) {
+                    compressFile(imgEstabelecimento,800,600,10);
                     Bitmap mImageBitmap = BitmapFactory.decodeFile(String.valueOf(imgEstabelecimento));
-//                    foto = Bitmap.createScaledBitmap(mImageBitmap, (int)(mImageBitmap.getWidth()*0.3),(int)(mImageBitmap.getHeight()*0.3), true);
                     foto = mImageBitmap;
                     imgArmazenada.setVisibility(View.VISIBLE);
                 }
@@ -230,6 +243,9 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String picturePath = cursor.getString(columnIndex);
                     cursor.close();
+
+
+                    compressFile(new File(picturePath),800,600,10);
                     foto = BitmapFactory.decodeFile(picturePath);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     foto.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -239,6 +255,18 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
 
                     imgArmazenada.setVisibility(View.VISIBLE);
                 }
+        }
+    }
+
+    private void compressFile(File path, int resX, int resY, int quality) {
+        try {
+            Bitmap img = BitmapFactory.decodeFile(path.getAbsolutePath());
+            img = Bitmap.createScaledBitmap(img, resX, resY, true);
+            FileOutputStream fileOuputStream = new FileOutputStream(path.getAbsolutePath());
+            img.compress(Bitmap.CompressFormat.JPEG, quality, fileOuputStream);
+            fileOuputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.cursoandroid.myopinion.adapter.EstabelecimentoAdapter;
 import com.cursoandroid.myopinion.adapter.RecyclerViewOnClickListenerHack;
+import com.cursoandroid.myopinion.database.FavoritoDAO;
 import com.cursoandroid.myopinion.database.UsuarioDAO;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
 import com.cursoandroid.myopinion.domain.Usuario;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FloatingActionButton addEstabelecimento,verEstabelecimento;
     private Drawer navigationDrawerLeft;
     private AccountHeader headerNavigationLeft;
+    private NavigationTabBar navigationTabBar;
 
     Intent adicionaLocal,estabelecimento;
     private MaterialSearchBar searchBar;
@@ -137,18 +140,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if(drawerItem != null)
                         {
                             Intent intent = null;
-                            if(drawerItem.getIdentifier() == 5)
-                            {
-                                intent = new Intent(MainActivity.this,LoginActivity.class);
-                                writeUserSharedPreferences();
-                                startActivity(intent);
-                                LoginManager.getInstance().logOut();
-                                finish();
-                            }else if(drawerItem.getIdentifier() == 2)
-                            {
-                                startActivityForResult(adicionaLocal,CADASTRAR_LOCAL);
-                                navigationDrawerLeft.closeDrawer();
-                            }
+
+                           switch((int)drawerItem.getIdentifier())
+                           {
+                               case 1:
+                                        break;
+                               case 2:
+                                        startActivityForResult(adicionaLocal,CADASTRAR_LOCAL);
+                                        navigationDrawerLeft.closeDrawer();
+                                        break;
+                               case 3:
+                                        navigationDrawerLeft.closeDrawer();
+                                        navigationTabBar.setModelIndex(3);
+                                        break;
+                               case 4:
+                                       intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                       "mailto","contato@minhaopiniao.com", null));
+                                       intent.putExtra(Intent.EXTRA_SUBJECT, "Contato pelo aplicativo minha opinião [ INFORME O ASSUNTO ]");
+                                       intent.putExtra(Intent.EXTRA_TEXT, "Obrigado por entrar em contato, teremos o prazer em te responder o mais rápido possível.");
+                                       startActivity(Intent.createChooser(intent, "Enviar email por ..."));
+                                        break;
+                               case 5:
+                                       intent = new Intent(MainActivity.this,LoginActivity.class);
+                                       writeUserSharedPreferences();
+                                       startActivity(intent);
+                                       LoginManager.getInstance().logOut();
+                                       finish();
+                                       break;
+                           }
 
 
                         }
@@ -168,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationDrawerLeft.addItems(
                 new PrimaryDrawerItem().withName(getString(R.string.minha_conta)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_account_circle_black_24dp)).withIdentifier(1).withSelectable(false),
                 new PrimaryDrawerItem().withName(getString(R.string.add_estabelecimento)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_playlist_add_black_24dp)).withIdentifier(2).withSelectable(false),
-                new PrimaryDrawerItem().withName(getString(R.string.meus_estabelecimentos)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_star_rate_black_18dp)).withIdentifier(3).withSelectable(false),
+                new PrimaryDrawerItem().withName(getString(R.string.meus_favoritos)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_star_rate_black_18dp)).withIdentifier(3).withSelectable(false),
                 new PrimaryDrawerItem().withName(getString(R.string.fale_conosco)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_question_answer_black_24dp)).withIdentifier(4).withSelectable(false),
                 new PrimaryDrawerItem().withName(getString(R.string.sair)).withIcon(ContextCompat.getDrawable(this,R.drawable.ic_logout)).withIdentifier(5).withSelectable(false),
 //                new DividerDrawerItem(),
@@ -180,6 +199,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         );
 
+
+        navigationTabBar.setOnTabBarSelectedIndexListener(new NavigationTabBar.OnTabBarSelectedIndexListener() {
+            @Override
+            public void onStartTabSelected(NavigationTabBar.Model model, int index) {
+                switch (index)
+                {
+                    case 0:
+                            showAllList();
+                            searchBar.disableSearch();
+                            break;
+
+                    case 1:
+                            searchBar.disableSearch();
+                            break;
+
+                    case 2:
+                            searchBar.disableSearch();
+                            break;
+
+                    case 3:
+                            showFavorites();
+                            searchBar.disableSearch();
+                            break;
+                }
+            }
+
+            @Override
+            public void onEndTabSelected(NavigationTabBar.Model model, int index) {
+
+            }
+        });
     }
 
 
@@ -187,11 +237,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        navigationTabBar.setModelIndex(0);
+//        showAllList();
 //        estabelecimentoDAO.read((int)estabelecimentoDAO.getEstabelecimento().getId());
 //        mList = estabelecimentoDAO.getEstabelecimentos();
+
+    }
+
+    private void showAllList()
+    {
         mList = estabelecimentoDAO.getEstabelecimentos();
-//        Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
+        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
+        adapter.setmRecyclerViewOnClickListenerHack(this);
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    private void showFavorites()
+    {
+        FavoritoDAO favoritoDAO = new FavoritoDAO(this);
+        ArrayList<Integer> list = favoritoDAO.getFavoritos();
+        ArrayList<Estabelecimento> e = new ArrayList<>();
+        for (int i: list){
+            estabelecimentoDAO.read(i);
+            e.add(estabelecimentoDAO.getEstabelecimento());
+        }
+
+        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),e);
         adapter.setmRecyclerViewOnClickListenerHack(this);
         recyclerView.setAdapter(adapter);
     }
@@ -199,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initNavBar()
     {
 
-        final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb);
+        navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb);
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
         models.add(
                 new NavigationTabBar.Model.Builder(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_indicar,null),Color.WHITE).title(getBaseContext().getString(R.string.recomendados))
@@ -242,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationTabBar.setBadgeSize(12);
         navigationTabBar.setTitleSize(15);
         navigationTabBar.setIconSizeFraction((float)0.5);
-        navigationTabBar.setModelIndex(0);
     }
 
     private void initSearchBar()
@@ -266,6 +337,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onSearchConfirmed(CharSequence charSequence) {
+        if(charSequence.length() == 0)
+        {
+            return;
+        }else {
+            ArrayList<Estabelecimento> list = estabelecimentoDAO.read(charSequence.toString());
+            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(), list);
+            adapter.setmRecyclerViewOnClickListenerHack(this);
+            recyclerView.setAdapter(adapter);
+
+            navigationTabBar.deselect();
+        }
     }
 
     @Override

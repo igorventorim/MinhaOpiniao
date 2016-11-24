@@ -57,9 +57,9 @@ public class AvaliacaoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 estabelecimentoDAO.read((int) e.getId());
-                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
                 estabelecimentoDAO.getEstabelecimento().calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
-                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
                 estabelecimentoDAO.update();
                 finish();
             }
