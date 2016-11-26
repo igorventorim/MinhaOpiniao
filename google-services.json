@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "433309492772",
+    "firebase_url": "https://minha-opiniao-ff4d1.firebaseio.com",
+    "project_id": "minha-opiniao-ff4d1",
+    "storage_bucket": "minha-opiniao-ff4d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433309492772:android:26a4520c5ddd6204",
+        "android_client_info": {
+          "package_name": "com.cursoandroid.myopinion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433309492772-csd2ku5gikeamsbe7dtl1jjo5gsns7id.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cursoandroid.myopinion",
+            "certificate_hash": "D99D78755503BC79A9943BD10D18FAA67B75CEAE"
+          }
+        },
+        {
+          "client_id": "433309492772-fa8gc6k9ao51t73vfhq3p8s5tlsi29dk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB9jMQ3Sl0jLWsWCNH0EpfuNh5XipglG4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433309492772-fa8gc6k9ao51t73vfhq3p8s5tlsi29dk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,6 +5,7 @@ import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -55,6 +56,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +67,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,RecyclerViewOnClickListenerHack {
 
     private final int CADASTRAR_LOCAL = 2;
+    private final int ID_ACCOUNT_FACEBOOK = 9999;
     private final int VOICE_RECOGNITION_REQUEST_CODE = 1;
     FloatingActionButton addEstabelecimento,verEstabelecimento;
     private Drawer navigationDrawerLeft;
@@ -93,13 +97,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         final Intent data = getIntent();
         sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
-//        final Usuario user = new Usuario(getApplicationContext());
-//        usuarioDAO = new UsuarioDAO(getApplicationContext());
         user = new Usuario();
-//        IProfile profile = new ProfileDrawerItem().withIdentifier(100);
-        IProfile profile = new ProfileDrawerItem().withName(/*Profile.getCurrentProfile().getName()*/"").withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
-//        if(isLogged()){ usuarioDAO.read(readIdUserSharedPreferences());}
-
+        IProfile profile = new ProfileDrawerItem().withName("").withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
         estabelecimentoDAO = new EstabelecimentoDAO(getApplicationContext());
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_estabelecimentos);
@@ -118,18 +117,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initNavBar();
 
-
-//        final Usuario user = usuarioDAO.getUsuario();
-//        if(user.getId() != 0)
-//        {
-//            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(user.getFotoBitmap()).withIdentifier(100);
-//        }
-//        else{profile = new ProfileDrawerItem().withName(/*Profile.getCurrentProfile().getName()*/"teste").withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
-
         //HeaderNavigation
         headerNavigationLeft = new AccountHeaderBuilder()
                 .withActivity(this)
-//                .withHeaderBackground(R.drawable.idea)
                 .withHeaderBackground(new ColorDrawable(Color.parseColor("#00bfff")))
                 .withTranslucentStatusBar(true)
                 .withSelectionListEnabled(false)
@@ -255,12 +245,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tasks = new wsTasks(getApplicationContext(),user,headerNavigationLeft,recyclerView,this,(ArrayList<Estabelecimento>)mList);
         if(isLogged()){ tasks.execTaskLoadUser(readIdUserSharedPreferences());}
 
-//        mList = estabelecimentoDAO.getEstabelecimentos();
-//        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
-//        adapter.setmRecyclerViewOnClickListenerHack(this);
-//        recyclerView.setAdapter(adapter);
-//        tasks.exectTaskLoadEstabelecimentos();
-
+        if(readIdUserSharedPreferences() ==  9999)
+        {
+            Log.d("ENTREI","SUCESSO!");
+            ArrayList<IProfile> arrayList = new ArrayList<>();
+            tasks.execTaskLoadImgFacebook();
+            profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
+            arrayList.add(profile);
+            headerNavigationLeft.setProfiles(arrayList);
+        }
 
 
     }
@@ -272,10 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         gpsController.onResume();
         navigationTabBar.setModelIndex(0);
-//        showAllList();
-//        estabelecimentoDAO.read((int)estabelecimentoDAO.getEstabelecimento().getId());
-//        mList = estabelecimentoDAO.getEstabelecimentos();
-
     }
 
     private void showAllList() { tasks.exectTaskLoadEstabelecimentos(); }
@@ -411,23 +400,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //        if(requestCode == CADASTRAR_LOCAL && resultCode == RESULT_OK)
 //        {
-//            mList = estabelecimentoDAO.getEstabelecimentos();
-//            Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
-//            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
-//            adapter.setmRecyclerViewOnClickListenerHack(this);
-//            recyclerView.setAdapter(adapter);
+
 //        }
     }
 
     @Override
     public void onClickListener(View view, int position) {
-
-//        estabelecimento.putExtra("estabelecimento",mList.get(position));
-//        Bundle b = new Bundle();
-//        b.putSerializable("estabelecimento",mList.get(position));
-//        estabelecimento.putExtras(b);
         estabelecimento.putExtra("estabelecimento",mList.get(position));
-//        Toast.makeText(getApplicationContext(),""+mList.get(position+1),Toast.LENGTH_LONG).show();
         startActivity(estabelecimento);
     }
 

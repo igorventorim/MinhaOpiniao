@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private UserLoginTask mAuthTask = null;
-
+    private final int ID_ACCOUNT_FACEBOOK = 9999;
     Intent telaPrincipal,telaCadastro;
     SharedPreferences sharedPref;
     CallbackManager callbackManager;
@@ -173,6 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                 }).executeAsync();
                 Log.d("Result",request.toString());
                 Toast.makeText(getApplicationContext(),getString(R.string.logged_sucess),Toast.LENGTH_LONG).show();
+                writeUserSharedPreferences(ID_ACCOUNT_FACEBOOK);
                 startActivity(telaPrincipal);
                 finish();
             }

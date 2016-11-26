@@ -1,7 +1,10 @@
 package com.cursoandroid.myopinion;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -21,12 +24,20 @@ import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
 import com.cursoandroid.myopinion.database.FavoritoDAO;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
 import com.github.ornolfr.ratingview.RatingView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,7 +117,7 @@ public class EstabelecimentoActivity extends AppCompatActivity {
     private void setDataEstabelecimento() {
         tvTituloEstabelecimento.setText(e.getNome());
         rvEstabelecimentoAvaliacao.setRating(e.getRating());
-//        storeImage.setImageBitmap(/*e.getFotoBitmap()*/);
+        if(e.getFoto() != null){ storeImage.setImageBitmap(e.getFotoBitmap()); }
         tvAreaComercial.setText(e.getTipoEstabelecimento());
         tvCidadeEstado.setText(e.getCidade() + " - " + e.getEstado());
         tvBairro.setText(e.getBairro());

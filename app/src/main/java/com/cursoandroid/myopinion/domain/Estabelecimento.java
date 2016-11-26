@@ -22,7 +22,7 @@ public class Estabelecimento implements Serializable{
     private String bairro;
     private double latitude;
     private double longitude;
-    private byte[] foto;
+    private byte[] foto = null;
     private boolean gps;
     private boolean notificacao;
     private String responsavel;

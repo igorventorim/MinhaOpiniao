@@ -42,7 +42,7 @@ public class AvaliacaoActivity extends AppCompatActivity {
         imgEstabelecimento = (CircleImageView) findViewById(R.id.profile_image);
         tvNameStore = (TextView) findViewById(R.id.name_store);
 
-//        imgEstabelecimento.setImageBitmap(/*e.getFotoBitmap()*/);
+        imgEstabelecimento.setImageBitmap(e.getFotoBitmap());
         tvNameStore.setText(e.getNome());
         initSpinners();
 
@@ -56,13 +56,8 @@ public class AvaliacaoActivity extends AppCompatActivity {
         avaliar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                estabelecimentoDAO.read((int) e.getId());
-//                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
                   e.calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
                   tasks.execTaskUpdateEstabelecimento(e.getId(),e.getRating(),(e.getNumAvaliacoes()));
-//                estabelecimentoDAO.getEstabelecimento().calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
-//                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
-//                estabelecimentoDAO.update();
                 setResult(RESULT_OK);
                 finish();
             }

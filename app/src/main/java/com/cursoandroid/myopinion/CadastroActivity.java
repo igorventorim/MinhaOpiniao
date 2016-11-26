@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.cursoandroid.myopinion.database.UsuarioDAO;
 import com.cursoandroid.myopinion.domain.Usuario;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,8 +27,11 @@ public class CadastroActivity extends AppCompatActivity {
     private Button btCadastrar;
     private EditText etDataNasc,etCEP,etNome,etEmail,etSenha,etConfirmaSenha;
     private UsuarioDAO usuarioDAO;
+    FirebaseStorage storage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
         Intent dados = getIntent();

@@ -10,8 +10,10 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,12 +25,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cursoandroid.myopinion.database.EstabelecimentoDAO;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AdicionaLocalAcitivity extends AppCompatActivity {
 
@@ -51,9 +61,15 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
     private EstabelecimentoDAO estabelecimentoDAO;
     private wsTasks tasks;
     SharedPreferences sharedPref;
+    FirebaseStorage storage;
+    StorageReference estabelecimentosRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        storage = FirebaseStorage.getInstance();
+        estabelecimentosRef = storage.getReferenceFromUrl("gs://minha-opiniao-ff4d1.appspot.com").child("estabelecimentos");
+
         sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
         tasks = new wsTasks(getApplicationContext());
         estabelecimentoDAO = new EstabelecimentoDAO(getApplicationContext());
@@ -204,12 +220,41 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         }else
             return;
 
+        uploadImage(nome);    /* ARRUMAR UMA FORMA DE FAZER PELO ID! */
         tasks.execTaskAddEstabelecimento(nome,tipo,0,estado,cidade,bairro,coordenadas[0],coordenadas[1],BitmapUtil.getBitmapAsByteArray(foto),responsavel,0,notificacoes,readIdUserSharedPreferences());
-        estabelecimentoDAO.put(nome,tipo,estado,cidade,bairro,notificacoes,foto,responsavel,coordenadas[0],coordenadas[1]);
+//        estabelecimentoDAO.put(nome,tipo,estado,cidade,bairro,notificacoes,foto,responsavel,coordenadas[0],coordenadas[1]);
         Toast.makeText(getApplicationContext(),"Estabelecimento cadastrado com sucesso!",Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
         finish();
 
+    }
+
+    private void uploadImage(String nome)
+    {
+        try {
+            UploadTask uploadTask;
+            InputStream in = new FileInputStream(imgEstabelecimento);
+            StorageReference uploadImage = estabelecimentosRef.child(nome+".jpg");
+            uploadTask = uploadImage.putStream(in);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d("URL",downloadUrl.toString());
+                }
+            });
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -259,7 +304,7 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
                     String picturePath = cursor.getString(columnIndex);
                     cursor.close();
 
-
+                    imgEstabelecimento = new File(picturePath);
                     compressFile(new File(picturePath),800,600,10);
                     foto = BitmapFactory.decodeFile(picturePath);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();

@@ -3,7 +3,11 @@ package com.cursoandroid.myopinion;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -12,7 +16,12 @@ import android.widget.Toast;
 import com.cursoandroid.myopinion.adapter.EstabelecimentoAdapter;
 import com.cursoandroid.myopinion.domain.Estabelecimento;
 import com.cursoandroid.myopinion.domain.Usuario;
+import com.facebook.Profile;
 import com.github.ornolfr.ratingview.RatingView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
@@ -22,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +43,7 @@ import java.util.Map;
 
 public class wsTasks extends Activity {
 
+    private EstabelecimentoAdapter.MyViewHolder holder;
     private AccessServiceAPI m_AccessServiceAPI;
     Context context;
     private Usuario user;
@@ -58,6 +70,8 @@ public class wsTasks extends Activity {
         this.listEstabelecimentos = list;
 //        this.profile = iProfile;
     }
+
+    public wsTasks(EstabelecimentoAdapter.MyViewHolder holder, Estabelecimento e){ this.holder = holder; this.e = e;}
 
     public void execTaskUserRegister(String nome, String email, String dtNasc, String senha, String cep){
         new TaskUserRegister().execute(nome,email,dtNasc,senha,cep,""/*Base64.encodeToString(foto, Base64.DEFAULT)*/);
@@ -86,6 +100,10 @@ public class wsTasks extends Activity {
     public void execTaskLoadNearby(double latitude, double longitude){ new TaskLoadNearby().execute(String.valueOf(latitude),String.valueOf(longitude));}
 
     public void execNewEstabelecimentos(){ new TaskLoadNewEstabelecimentos().execute(); }
+
+    public void execTaskLoadImgEstabelecimento(String nome){ new TaskLoadImgEstabelecimento().execute(nome);}
+
+    public void execTaskLoadImgFacebook(){ new TaskLoadImgFacebook().execute(); }
 
     private int booleanToInt(boolean b)
     {
@@ -125,15 +143,11 @@ public class wsTasks extends Activity {
             return WSConfig.RESULT_ERROR;
         }
 
-//        @Override
-//        protected void onPostExecute(Integer integer) {
-//            super.onPostExecute(integer);
-//            finish();
-//        }
     }
 
     public class TaskLoadUser extends AsyncTask<String, Void, Integer>
     {
+        Bitmap foto;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -156,8 +170,12 @@ public class wsTasks extends Activity {
                 user.setEmail(String.valueOf(jsonObject.getString("email")));
                 user.setDtNasc(String.valueOf(jsonObject.getString("dtNasc")));
                 user.setSenha(String.valueOf(jsonObject.getString("nome")));
-                user.setFoto(Base64.decode(String.valueOf(jsonObject.getString("foto")), Base64.DEFAULT));
+//                user.setFoto(Base64.decode(String.valueOf(jsonObject.getString("foto")), Base64.DEFAULT));
                 user.setCep(String.valueOf(jsonObject.getString("cep")));
+
+//                URL url = new URL("https://image.freepik.com/icones-gratis/usuario-masculino-fechar-se-forma-para-facebook_318-37635.jpg");
+//                foto = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
                 return WSConfig.RESULT_SUCCESS;
 
             } catch (IOException e) {
@@ -172,7 +190,8 @@ public class wsTasks extends Activity {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             ArrayList<IProfile> arrayList = new ArrayList<>();
-            IProfile profile = new ProfileDrawerItem().withIdentifier(100).withEmail(user.getEmail()).withName(user.getNome());;//.withName(user.getNome());
+            user.setFoto( BitmapUtil.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(),R.drawable.avatar)));
+            IProfile profile = new ProfileDrawerItem().withIdentifier(100).withEmail(user.getEmail()).withName(user.getNome()).withIcon(user.getFotoBitmap());;//.withName(user.getNome());
             arrayList.add(profile);
             accountHeader.setProfiles(arrayList);
             finish();
@@ -208,9 +227,6 @@ public class wsTasks extends Activity {
 
             try {
                 String jsonString = m_AccessServiceAPI.getJSONStringWithParam_POST(WSConfig.SERVICE_API_URL, postParam);
-//                JSONObject jsonObject = new JSONObject(jsonString);
-                //                Log.d("RESULTADO: ",jsonObject.getInt("result")+"");
-//                Log.d("SEILA",jsonString);
                 return Integer.parseInt(jsonString.trim());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -219,11 +235,6 @@ public class wsTasks extends Activity {
         }
 
 
-//        @Override
-//        protected void onPostExecute(Integer integer) {
-//            super.onPostExecute(integer);
-//            finish();
-//        }
 
     }
 
@@ -266,6 +277,8 @@ public class wsTasks extends Activity {
                         novo.setCidade(String.valueOf(jsonObject.getString("cidade")));
                         novo.setBairro(String.valueOf(jsonObject.getString("bairro")));
                         novo.setResponsavel(String.valueOf(jsonObject.getString("responsavel")));
+
+
                         listEstabelecimentos.add(novo);
                     }
 
@@ -295,7 +308,6 @@ public class wsTasks extends Activity {
 
             finish();
         }
-
 
     }
 
@@ -604,6 +616,83 @@ public class wsTasks extends Activity {
         }
 
 
+    }
+
+    public class TaskLoadImgEstabelecimento extends AsyncTask<String, Void, Integer> {
+
+        URL url;
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+                url = new URL("https://firebasestorage.googleapis.com/v0/b/minha-opiniao-ff4d1.appspot.com/o/estabelecimentos%2F"+params[0].toLowerCase().replace(" ","%20")+".jpg?alt=media&token=5de1dd94-94f5-49f5-9cc0-683cd5dbbc24");
+                return WSConfig.RESULT_SUCCESS;
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }
+            return WSConfig.RESULT_ERROR;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+                if(integer == WSConfig.RESULT_SUCCESS)
+                {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference estabelecimentosRef = storage.getReferenceFromUrl("gs://minha-opiniao-ff4d1.appspot.com").child("estabelecimentos");
+                    StorageReference downloadImage = estabelecimentosRef.child(e.getNome().toLowerCase()+".jpg");
+
+                    downloadImage.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            // Use the bytes to display the image
+                            holder.ivEstabelecimento.setImageBitmap(BitmapFactory.decodeByteArray(bytes,0,bytes.length));
+                            e.setFoto(bytes);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+
+
+
+                }
+        }
+    }
+
+    public class TaskLoadImgFacebook extends AsyncTask<String, Void, Integer> {
+
+        Bitmap bitmap;
+        @Override
+        protected Integer doInBackground(String... params) {
+
+                URL imageURL = null;
+                try {
+                    imageURL = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?type=large");
+                     bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+                    return WSConfig.RESULT_SUCCESS;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            return WSConfig.RESULT_ERROR;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+
+            if(integer == WSConfig.RESULT_SUCCESS) {
+                ArrayList<IProfile> arrayList = new ArrayList<>();
+                super.onPostExecute(integer);
+                IProfile profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(bitmap).withIdentifier(100);
+                arrayList.add(profile);
+                accountHeader.setProfiles(arrayList);
+            }
+        }
     }
 
 }
