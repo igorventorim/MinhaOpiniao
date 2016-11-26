@@ -183,20 +183,18 @@ public class GPSController implements LocationListener,GoogleApiClient.Connectio
             coordenadas[1] = addresses.get(0).getLongitude();
         }
 
-        return coordenadas;
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            e.printStackTrace();;
         }
+        return coordenadas;
     }
 
 
-    public String getAddressFromLocation(Context context)
-    {
+    public String getAddressFromLocation(Context context) throws IOException {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         String result = null;
         List<Address> addressList = null;
-        try {
+
             addressList = geocoder.getFromLocation(this.getLatitude(), this.getLongitude(), 1);
 
             if (addressList != null && addressList.size() > 0) {
@@ -211,9 +209,6 @@ public class GPSController implements LocationListener,GoogleApiClient.Connectio
                 result = sb.toString();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return result;
     }

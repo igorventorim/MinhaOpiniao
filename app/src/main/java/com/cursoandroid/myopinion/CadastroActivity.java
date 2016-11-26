@@ -12,11 +12,15 @@ import android.widget.Toast;
 import com.cursoandroid.myopinion.database.UsuarioDAO;
 import com.cursoandroid.myopinion.domain.Usuario;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class CadastroActivity extends AppCompatActivity {
 
     private final static String EMAIL = "email";
     private final static String SENHA = "senha";
 
+    private wsTasks tasks;
     private ImageButton backCadastro;
     private Button btCadastrar;
     private EditText etDataNasc,etCEP,etNome,etEmail,etSenha,etConfirmaSenha;
@@ -54,8 +58,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                if(verificaDados()) {
-                   usuarioDAO.put(etNome.getText().toString(), etEmail.getText().toString(), etCEP.getText().toString(), etDataNasc.getText().toString(), etSenha.getText().toString(), BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
-                   Toast.makeText(getApplicationContext(), getResources().getString(R.string.usuario_cadastrado), Toast.LENGTH_LONG).show();
+                   userRegister();
                    Intent retorno = new Intent();
                    retorno.putExtra(EMAIL,etEmail.getText().toString());
                    retorno.putExtra(SENHA,etSenha.getText().toString());
@@ -66,6 +69,13 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void userRegister()
+    {
+        tasks = new wsTasks(this);
+//        byte[] foto = BitmapUtil.getBitmapAsByteArray(BitmapUtil.decodeSampledBitmapFromResource(getResources(),R.drawable.avatar,50,50));
+        tasks.execTaskUserRegister(etNome.getText().toString(), etEmail.getText().toString(),etDataNasc.getText().toString(),Mask.md5(etSenha.getText().toString()),etCEP.getText().toString());
     }
 
     private boolean verificaDados()
@@ -92,5 +102,7 @@ public class CadastroActivity extends AppCompatActivity {
 
         return true;
     }
+
+
 
 }

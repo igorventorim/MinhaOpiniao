@@ -2,6 +2,7 @@ package com.cursoandroid.myopinion;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class AdicionaLocalAcitivity extends AppCompatActivity {
 
@@ -47,9 +49,13 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
     private Bitmap foto;
     GPSController gpsController;
     private EstabelecimentoDAO estabelecimentoDAO;
+    private wsTasks tasks;
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
+        tasks = new wsTasks(getApplicationContext());
         estabelecimentoDAO = new EstabelecimentoDAO(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adiciona_local_acitivity);
@@ -169,10 +175,18 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
 
         if(rbGps.isChecked())
         {
-            String endereco[] = gpsController.getAddressFromLocation(this).split("-");
-            cidade = endereco[1];
-            estado = endereco[2];
-            bairro = endereco[0];
+            try {
+
+                String endereco[] = gpsController.getAddressFromLocation(this).split("-");
+                cidade = endereco[1];
+                estado = endereco[2];
+                bairro = endereco[0];
+            }catch (IOException e)
+            {
+                cidade = "";
+                estado = "";
+                bairro = "";
+            }
         }
 
 
@@ -190,6 +204,7 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         }else
             return;
 
+        tasks.execTaskAddEstabelecimento(nome,tipo,0,estado,cidade,bairro,coordenadas[0],coordenadas[1],BitmapUtil.getBitmapAsByteArray(foto),responsavel,0,notificacoes,readIdUserSharedPreferences());
         estabelecimentoDAO.put(nome,tipo,estado,cidade,bairro,notificacoes,foto,responsavel,coordenadas[0],coordenadas[1]);
         Toast.makeText(getApplicationContext(),"Estabelecimento cadastrado com sucesso!",Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
@@ -270,5 +285,8 @@ public class AdicionaLocalAcitivity extends AppCompatActivity {
         }
     }
 
-
+    private int readIdUserSharedPreferences()
+    {
+        return sharedPref.getInt(getString(R.string.user_id),-1);
+    }
 }

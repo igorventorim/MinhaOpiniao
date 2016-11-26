@@ -27,23 +27,23 @@ public class AvaliacaoActivity extends AppCompatActivity {
     private Button avaliar;
     private CircleImageView imgEstabelecimento;
     private TextView tvNameStore;
-    private EstabelecimentoDAO estabelecimentoDAO;
-
+//    private EstabelecimentoDAO estabelecimentoDAO;
+    wsTasks tasks;
     private List<String> itens = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avaliacao);
-        estabelecimentoDAO = new EstabelecimentoDAO(this);
+//        estabelecimentoDAO = new EstabelecimentoDAO(this);
+        tasks = new wsTasks(getApplicationContext());
         final Intent i = getIntent();
         final Estabelecimento e = (Estabelecimento) i.getSerializableExtra(ESTABELECIMENTO);
         avaliar = (Button) findViewById(R.id.bt_avaliar);
         imgEstabelecimento = (CircleImageView) findViewById(R.id.profile_image);
         tvNameStore = (TextView) findViewById(R.id.name_store);
 
-        imgEstabelecimento.setImageBitmap(e.getFotoBitmap());
+//        imgEstabelecimento.setImageBitmap(/*e.getFotoBitmap()*/);
         tvNameStore.setText(e.getNome());
-
         initSpinners();
 
         backAvaliacao.setOnClickListener(new View.OnClickListener() {
@@ -56,11 +56,14 @@ public class AvaliacaoActivity extends AppCompatActivity {
         avaliar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                estabelecimentoDAO.read((int) e.getId());
+//                estabelecimentoDAO.read((int) e.getId());
 //                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
-                estabelecimentoDAO.getEstabelecimento().calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
+                  e.calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
+                  tasks.execTaskUpdateEstabelecimento(e.getId(),e.getRating(),(e.getNumAvaliacoes()));
+//                estabelecimentoDAO.getEstabelecimento().calculaNota(atendimento.getSelectedIndex(),conforto.getSelectedIndex(),qualidade.getSelectedIndex(),custo.getSelectedIndex(),retornar.getSelectedIndex(),indicarAmigo.getSelectedIndex());
 //                Toast.makeText(getApplicationContext(),estabelecimentoDAO.getEstabelecimento().getNome()+":"+estabelecimentoDAO.getEstabelecimento().getRating(),Toast.LENGTH_SHORT).show();
-                estabelecimentoDAO.update();
+//                estabelecimentoDAO.update();
+                setResult(RESULT_OK);
                 finish();
             }
         });
@@ -85,13 +88,6 @@ public class AvaliacaoActivity extends AppCompatActivity {
         custo.setItems(getResources().getStringArray(R.array.questao_custo));
         retornar.setItems(getResources().getStringArray(R.array.questao_objetiva));
         indicarAmigo.setItems(getResources().getStringArray(R.array.questao_objetiva));
-
-//        atendimento.setText("");
-//        conforto.setText("");
-//        qualidade.setText("");
-//        custo.setText("");
-//        retornar.setText("");
-//        indicarAmigo.setText("");
     }
 
 

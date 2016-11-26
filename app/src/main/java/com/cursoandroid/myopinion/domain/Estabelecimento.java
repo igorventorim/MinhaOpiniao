@@ -28,16 +28,16 @@ public class Estabelecimento implements Serializable{
     private String responsavel;
     private int numAvaliacoes;
 
-    public float getNota() {
-        return nota;
-    }
+//    public float getNota() {
+//        return nota;
+//    }
 
 //    public Estabelecimento setNota(float nota) {
 //        this.nota = nota;
 //        return this;
 //    }
 
-    private float nota;
+//    private float nota;
 
     public int getNumAvaliacoes() {
         return numAvaliacoes;

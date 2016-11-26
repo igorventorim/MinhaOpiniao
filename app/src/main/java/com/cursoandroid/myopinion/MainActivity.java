@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -19,6 +21,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,8 +50,15 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialSearchBar.OnSearchActionListener,RecyclerViewOnClickListenerHack {
@@ -69,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences sharedPref;
     private final int DEFAULT_INVALID_ID = -1;
     EstabelecimentoDAO estabelecimentoDAO;
-    private UsuarioDAO usuarioDAO;
+    private wsTasks tasks;
+    Usuario user;
+    GPSController gpsController;
+//    private UsuarioDAO usuarioDAO;
 
 //    String email;
 
@@ -80,8 +94,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final Intent data = getIntent();
         sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_logged), Context.MODE_PRIVATE);
 //        final Usuario user = new Usuario(getApplicationContext());
-        usuarioDAO = new UsuarioDAO(getApplicationContext());
-        if(isLogged()){ usuarioDAO.read(readIdUserSharedPreferences());}
+//        usuarioDAO = new UsuarioDAO(getApplicationContext());
+        user = new Usuario();
+//        IProfile profile = new ProfileDrawerItem().withIdentifier(100);
+        IProfile profile = new ProfileDrawerItem().withName(/*Profile.getCurrentProfile().getName()*/"").withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);
+//        if(isLogged()){ usuarioDAO.read(readIdUserSharedPreferences());}
+
         estabelecimentoDAO = new EstabelecimentoDAO(getApplicationContext());
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_estabelecimentos);
@@ -95,24 +113,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(adicionaLocal,CADASTRAR_LOCAL);
             }
         });
-
+        gpsController = new GPSController(getApplicationContext());
         searchBar.setOnSearchActionListener(this);
 
         initNavBar();
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        mList = estabelecimentoDAO.getEstabelecimentos();
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
-        adapter.setmRecyclerViewOnClickListenerHack(this);
-        recyclerView.setAdapter(adapter);
-        IProfile profile;
-        final Usuario user = usuarioDAO.getUsuario();
-        if(user.getId() != 0)
-        {
-            profile = new ProfileDrawerItem().withName(usuarioDAO.getUsuario().getNome()).withEmail(user.getEmail()).withIcon(user.getFotoBitmap()).withIdentifier(100);
-        }
-        else{profile = new ProfileDrawerItem().withName(Profile.getCurrentProfile().getName()).withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
+
+
+//        final Usuario user = usuarioDAO.getUsuario();
+//        if(user.getId() != 0)
+//        {
+//            profile = new ProfileDrawerItem().withName(user.getNome()).withEmail(user.getEmail()).withIcon(user.getFotoBitmap()).withIdentifier(100);
+//        }
+//        else{profile = new ProfileDrawerItem().withName(/*Profile.getCurrentProfile().getName()*/"teste").withEmail("").withIcon(ContextCompat.getDrawable(this,R.drawable.avatar)).withIdentifier(100);}
 
         //HeaderNavigation
         headerNavigationLeft = new AccountHeaderBuilder()
@@ -124,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .withHeightDp(150)
                 .addProfiles(profile)
                 .build();
+
 
         //NAVIGATION DRAWER
         navigationDrawerLeft = new DrawerBuilder()
@@ -211,10 +224,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             break;
 
                     case 1:
+                            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                            if (statusOfGPS){showNearby(gpsController.getLatitude(),gpsController.getLongitude());}else{ Toast.makeText(getApplicationContext(), "Por favor, ligue o GPS para utilizar este recurso!", Toast.LENGTH_LONG).show();}
+
                             searchBar.disableSearch();
                             break;
 
                     case 2:
+                            showNewEstabelecimentos();
                             searchBar.disableSearch();
                             break;
 
@@ -230,6 +248,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        tasks = new wsTasks(getApplicationContext(),user,headerNavigationLeft,recyclerView,this,(ArrayList<Estabelecimento>)mList);
+        if(isLogged()){ tasks.execTaskLoadUser(readIdUserSharedPreferences());}
+
+//        mList = estabelecimentoDAO.getEstabelecimentos();
+//        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
+//        adapter.setmRecyclerViewOnClickListenerHack(this);
+//        recyclerView.setAdapter(adapter);
+//        tasks.exectTaskLoadEstabelecimentos();
+
+
+
     }
 
 
@@ -237,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        gpsController.onResume();
         navigationTabBar.setModelIndex(0);
 //        showAllList();
 //        estabelecimentoDAO.read((int)estabelecimentoDAO.getEstabelecimento().getId());
@@ -244,29 +278,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void showAllList()
-    {
-        mList = estabelecimentoDAO.getEstabelecimentos();
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),mList);
-        adapter.setmRecyclerViewOnClickListenerHack(this);
-        recyclerView.setAdapter(adapter);
-
-    }
+    private void showAllList() { tasks.exectTaskLoadEstabelecimentos(); }
 
     private void showFavorites()
     {
         FavoritoDAO favoritoDAO = new FavoritoDAO(this);
-        ArrayList<Integer> list = favoritoDAO.getFavoritos();
-        ArrayList<Estabelecimento> e = new ArrayList<>();
-        for (int i: list){
-            estabelecimentoDAO.read(i);
-            e.add(estabelecimentoDAO.getEstabelecimento());
-        }
-
-        EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),e);
-        adapter.setmRecyclerViewOnClickListenerHack(this);
-        recyclerView.setAdapter(adapter);
+        String listaFavoritos = favoritoDAO.getStringFavoritos();
+        tasks.execTaskLoadFavorites(listaFavoritos);
     }
+
+    private void showNearby(double latitude, double longitude){ tasks.execTaskLoadNearby(latitude,longitude);}
+
+    private void showNewEstabelecimentos() { tasks.execNewEstabelecimentos(); }
 
     private void initNavBar()
     {
@@ -341,11 +364,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             return;
         }else {
-            ArrayList<Estabelecimento> list = estabelecimentoDAO.read(charSequence.toString());
+            ArrayList<Estabelecimento> list = new ArrayList<>();//estabelecimentoDAO.read(charSequence.toString());
+            for (Estabelecimento e: mList){
+                if(e.getNome().toLowerCase().contains(charSequence.toString().toLowerCase())){ list.add(e); }
+            }
             EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(), list);
             adapter.setmRecyclerViewOnClickListenerHack(this);
             recyclerView.setAdapter(adapter);
-
             navigationTabBar.deselect();
         }
     }
@@ -384,14 +409,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        if(requestCode == CADASTRAR_LOCAL && resultCode == RESULT_OK)
-        {
+//        if(requestCode == CADASTRAR_LOCAL && resultCode == RESULT_OK)
+//        {
 //            mList = estabelecimentoDAO.getEstabelecimentos();
 //            Toast.makeText(getApplicationContext(),"Size:"+estabelecimentoDAO.getEstabelecimentos().size(),Toast.LENGTH_LONG).show();
 //            EstabelecimentoAdapter adapter = new EstabelecimentoAdapter(getApplicationContext(),estabelecimentoDAO.getEstabelecimentos());
 //            adapter.setmRecyclerViewOnClickListenerHack(this);
 //            recyclerView.setAdapter(adapter);
-        }
+//        }
     }
 
     @Override
@@ -431,4 +456,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return sharedPref.getBoolean(getString(R.string.saved_logged),false);
     }
 
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        gpsController.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        gpsController.onStop();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gpsController.onPause();
+    }
 }

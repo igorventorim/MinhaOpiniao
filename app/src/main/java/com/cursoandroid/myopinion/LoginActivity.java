@@ -39,10 +39,14 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
@@ -314,28 +318,29 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            ArrayList<String> DUMMY_CREDENTIALS = null;
-            try {
-                // Simulate network access.
-                DUMMY_CREDENTIALS = usuarioDAO.getCredenciais();
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+                id = -1;
+                AccessServiceAPI m_AccessServiceAPI = new AccessServiceAPI();
+                Map<String, String> postParam = new HashMap<>();
+                postParam.put("action","checkLogin");
+                postParam.put("email",mEmail);
+                postParam.put("senha",Mask.md5(mPassword));
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    id = Integer.parseInt(pieces[2]);
-                    return pieces[1].equals(mPassword);
+                try {
+                    String jsonString = m_AccessServiceAPI.getJSONStringWithParam_POST(WSConfig.SERVICE_API_URL, postParam);
+                    Log.d("TESTE",jsonString.length()+" "+jsonString);
+                    id = Integer.parseInt(jsonString.trim());
+
+                    if(id != -1 && id != -2){ return true;}
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+             if(id == -2) {
+                telaCadastro.putExtra("email", mEmail);
+                telaCadastro.putExtra("senha", mPassword);
+                startActivity(telaCadastro);
             }
 
-            telaCadastro.putExtra("email",mEmail);
-            telaCadastro.putExtra("senha",mPassword);
-            startActivity(telaCadastro);
             return false;
         }
 

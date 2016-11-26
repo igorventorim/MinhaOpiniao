@@ -113,8 +113,48 @@ public class FavoritoDAO {
         {
             listFavoritos.add(c.getInt(c.getColumnIndex(DBContract.EntdFavorito.COLUMN_NAME_ID_FAVORITO)));
         }
+        c.close();
+        this.close();
         return listFavoritos;
     }
+
+    public String getStringFavoritos()
+    {
+        this.open("read");
+        String list = "";
+
+        String[] projection = {
+                DBContract.EntdFavorito._ID,
+                DBContract.EntdFavorito.COLUMN_NAME_ID_FAVORITO
+        };
+
+        Cursor c = db.query(
+                DBContract.EntdFavorito.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        boolean findEntd;
+
+        while((findEntd = c.moveToNext()))
+        {
+            list += String.valueOf(c.getInt(c.getColumnIndex(DBContract.EntdFavorito.COLUMN_NAME_ID_FAVORITO)))+";";
+//            listFavoritos.add();
+        }
+        c.close();
+        this.close();
+
+        if(list.length()>0){
+        return list.substring(0,list.length()-1);}
+
+        else{ return ""; }
+    }
+
+
 
 
 

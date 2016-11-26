@@ -49,7 +49,7 @@ public class EstabelecimentoAdapter extends RecyclerView.Adapter<Estabelecimento
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        holder.ivEstabelecimento.setImageBitmap(mList.get(position).getFotoBitmap()); // SETAR IMAGEM DO VETOR
+//        holder.ivEstabelecimento.setImageBitmap(mList.get(position).getFotoBitmap()); // SETAR IMAGEM DO VETOR
         holder.tvModel.setText(mList.get(position).getNome());
         holder.tvType.setText(mList.get(position).getTipoEstabelecimento());
         holder.rvAvaliacao.setRating(mList.get(position).getRating()/*/(float)mList.get(position).getNumAvaliacoes()*/);
