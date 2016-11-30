@@ -105,6 +105,8 @@ public class wsTasks extends Activity {
 
     public void execTaskLoadImgFacebook(){ new TaskLoadImgFacebook().execute(); }
 
+    public void execTaskForgotPassword(String email){ new TaskForgotPassword().execute(email);}
+
     private int booleanToInt(boolean b)
     {
         if(b){ return 1; }
@@ -693,6 +695,33 @@ public class wsTasks extends Activity {
                 accountHeader.setProfiles(arrayList);
             }
         }
+    }
+
+
+    public class TaskForgotPassword extends AsyncTask<String, Void, Integer>
+    {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            m_AccessServiceAPI = new AccessServiceAPI();
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            Map<String, String> postParam = new HashMap<>();
+            postParam.put("action","recuperarSenha");
+            postParam.put("email",params[0]);
+
+            try {
+                String jsonString = m_AccessServiceAPI.getJSONStringWithParam_POST(WSConfig.SERVICE_API_URL, postParam);
+                return WSConfig.RESULT_SUCCESS;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return WSConfig.RESULT_ERROR;
+        }
+
     }
 
 }

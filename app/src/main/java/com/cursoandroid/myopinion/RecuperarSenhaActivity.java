@@ -3,6 +3,7 @@ package com.cursoandroid.myopinion;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +35,11 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
         btEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                email.setText("");
+                wsTasks tasks = new wsTasks(getApplicationContext());
+                tasks.execTaskForgotPassword(email.getText().toString());
+                Log.d("email", String.valueOf(email.getText()));
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.recup_senha), Toast.LENGTH_LONG).show();
+                email.setText("");
             }
         });
 
